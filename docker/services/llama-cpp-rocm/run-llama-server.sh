@@ -16,8 +16,7 @@ set -- \
   --timeout "$LLAMA_TIMEOUT" \
   --threads-http "$LLAMA_THREADS_HTTP" \
   --gpu-layers "$LLAMA_GPU_LAYERS" \
-  --n-cpu-moe "$LLAMA_N_CPU_MOE" \
-  --main-gpu "$LLAMA_MAIN_GPU"
+  --n-cpu-moe "$LLAMA_N_CPU_MOE"
 
 if [ "$LLAMA_CPU_MOE" = "1" ]; then
   set -- "$@" --cpu-moe

@@ -16,13 +16,8 @@ services:
       - /dev/dri:/dev/dri
     security_opt:
       - seccomp=unconfined
-    group_add:
-      - video
-      - render
     environment:
       MODEL: ${MODEL:?Set MODEL to a model path inside /models, for example /models/model.gguf}
-      HSA_OVERRIDE_GFX_VERSION: ${HSA_OVERRIDE_GFX_VERSION:-11.0.0}
-      HIP_VISIBLE_DEVICES: ${HIP_VISIBLE_DEVICES:-all}
       LLAMA_PORT: ${LLAMA_PORT:-8080}
       LLAMA_CTX_SIZE: ${LLAMA_CTX_SIZE:-8192}
       LLAMA_PREDICT: ${LLAMA_PREDICT:--1}
@@ -36,7 +31,6 @@ services:
       LLAMA_GPU_LAYERS: ${LLAMA_GPU_LAYERS:-99}
       LLAMA_CPU_MOE: ${LLAMA_CPU_MOE:-0}
       LLAMA_N_CPU_MOE: ${LLAMA_N_CPU_MOE:-16}
-      LLAMA_MAIN_GPU: ${LLAMA_MAIN_GPU:-0}
       LLAMA_API_KEY: ${LLAMA_API_KEY:-}
       LLAMA_SYSTEM_PROMPT_FILE: ${LLAMA_SYSTEM_PROMPT_FILE:-}
       LLAMA_FLASH_ATTN: ${LLAMA_FLASH_ATTN:-0}
