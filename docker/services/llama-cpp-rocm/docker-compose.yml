@@ -1,10 +1,14 @@
 services:
   llama-server:
-    image: ghcr.io/ggml-org/llama.cpp:server-rocm
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        LLAMA_CPP_REF: ${LLAMA_CPP_REF:-master}
+        ROCM_DOCKER_ARCH: ${ROCM_DOCKER_ARCH:-gfx1030;gfx1100;gfx1201}
+    image: llama-cpp-rocm:latest
     container_name: llama-cpp-rocm
     restart: unless-stopped
-    # Example:
-    # MODEL=/models/Qwen3-Coder-Next-GGUF.gguf docker compose up -d
     ports:
       - "${LLAMA_PORT:-8080}:${LLAMA_PORT:-8080}"
     devices:
@@ -19,7 +23,6 @@ services:
       MODEL: ${MODEL:?Set MODEL to a model path inside /models, for example /models/model.gguf}
       HSA_OVERRIDE_GFX_VERSION: ${HSA_OVERRIDE_GFX_VERSION:-11.0.0}
       HIP_VISIBLE_DEVICES: ${HIP_VISIBLE_DEVICES:-all}
-      LLAMA_HOST: ${LLAMA_HOST:-0.0.0.0}
       LLAMA_PORT: ${LLAMA_PORT:-8080}
       LLAMA_CTX_SIZE: ${LLAMA_CTX_SIZE:-8192}
       LLAMA_PREDICT: ${LLAMA_PREDICT:--1}
@@ -36,7 +39,6 @@ services:
       LLAMA_MAIN_GPU: ${LLAMA_MAIN_GPU:-0}
       LLAMA_API_KEY: ${LLAMA_API_KEY:-}
       LLAMA_SYSTEM_PROMPT_FILE: ${LLAMA_SYSTEM_PROMPT_FILE:-}
-      LLAMA_LOG_FORMAT: ${LLAMA_LOG_FORMAT:-json}
       LLAMA_FLASH_ATTN: ${LLAMA_FLASH_ATTN:-0}
       LLAMA_METRICS: ${LLAMA_METRICS:-0}
       LLAMA_MLOCK: ${LLAMA_MLOCK:-0}

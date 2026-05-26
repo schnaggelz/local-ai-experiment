@@ -1,5 +1,7 @@
 set -eu
 
+: "${LLAMA_HOST:=0.0.0.0}"
+
 set -- \
   --model "$MODEL" \
   --host "$LLAMA_HOST" \
@@ -15,8 +17,7 @@ set -- \
   --threads-http "$LLAMA_THREADS_HTTP" \
   --gpu-layers "$LLAMA_GPU_LAYERS" \
   --n-cpu-moe "$LLAMA_N_CPU_MOE" \
-  --main-gpu "$LLAMA_MAIN_GPU" \
-  --log-format "$LLAMA_LOG_FORMAT"
+  --main-gpu "$LLAMA_MAIN_GPU"
 
 if [ "$LLAMA_CPU_MOE" = "1" ]; then
   set -- "$@" --cpu-moe
