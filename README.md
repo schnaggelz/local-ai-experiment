@@ -11,6 +11,7 @@ The main setup in this repo is a `llama.cpp` server container built for ROCm GPU
 - `docker/services/llama-cpp-rocm/Dockerfile` - Local ROCm build for `llama-server`.
 - `docker/services/llama-cpp-rocm/docker-compose.yml` - Compose service definition, GPU device passthrough, build settings, and default runtime settings.
 - `docker/services/llama-cpp-rocm/run-llama-server.sh` - Entrypoint script that converts environment variables into `llama-server` CLI flags.
+- `docker/services/ollama-rocm/.env` - Optional per-service Compose overrides for port and llama.cpp runtime settings.
 
 ### Requirements
 
