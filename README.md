@@ -54,3 +54,52 @@ Most values have sensible defaults, but `MODEL` is required.
 
 - The wrapper script enables optional flags only when the matching environment variable is set.
 - The container is configured for ROCm and may not work with non-ROCm images or GPUs without adjustment.
+
+## ROCm Ollama server
+
+This variant builds a local Ollama image on top of Ubuntu 24.04, installs ROCm inside the container, and starts `ollama serve` directly through Compose.
+
+### Files
+
+- `docker/services/ollama-rocm/Dockerfile` - Ubuntu-based image with ROCm and Ollama installed.
+- `docker/services/ollama-rocm/docker-compose.yml` - Compose service definition, GPU device passthrough, and runtime environment defaults.
+- `docker/services/ollama-rocm/.env` - Optional per-service Compose overrides for port and Ollama runtime settings.
+
+### Requirements
+
+- Docker with Compose support.
+- A ROCm-capable AMD GPU with `/dev/kfd` and `/dev/dri` access.
+
+### Quick start
+
+1. Change into `docker/services/ollama-rocm`.
+2. Optionally edit `.env` to override the exposed port or Ollama runtime defaults.
+3. Start the service with Compose.
+4. Pull or run models through the Ollama API or CLI once the container is up.
+
+Example:
+
+```bash
+cd docker/services/ollama-rocm
+docker compose up -d
+docker compose exec rocm-ollama ollama pull llama3.2
+```
+
+The server listens on port `11434` by default.
+
+### Common configuration
+
+The Compose file exposes these environment variables:
+
+- `OLLAMA_PORT`
+- `OLLAMA_HOST`
+- `OLLAMA_CONTEXT_LENGTH`
+- `OLLAMA_MAX_VRAM`
+- `OLLAMA_NUM_PARALLEL`
+
+Defaults are defined in `docker-compose.yml` and can be overridden in the service `.env` file or by exporting variables on the command line before running Compose.
+
+### Notes
+
+- The named volume `ollama_data` persists downloaded models across container restarts.
+- If you run Compose from outside `docker/services/ollama-rocm`, pass `--env-file docker/services/ollama-rocm/.env` so the service-specific overrides are used consistently.
