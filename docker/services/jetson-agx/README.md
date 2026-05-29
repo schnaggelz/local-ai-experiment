@@ -1,4 +1,6 @@
-# NVIDIA Jetson AGX Xavier SDK Manager via Docker
+# NVIDIA Jetson AGX Xavier Setup
+
+## SDK Manager via Docker
 
 This directory keeps only the pieces required to enter NVIDIA SDK Manager from Docker on a Linux host. After the container starts, use the normal interactive SDK Manager wizard to pick JetPack, detect the Xavier, and start the flash.
 
@@ -8,7 +10,7 @@ Files in this directory:
 - `.env.example` - Sample environment file for the Compose service.
 - `sdkmanager-docker.sh` - Thin launcher for `docker compose run --rm sdkmanager`.
 
-## 1. Prepare the host
+### Prepare the host
 
 SDK Manager's Docker image still depends on host binfmt support. Without it, Jetson installs can fail with `dpkg: Exec format error`.
 
@@ -29,7 +31,7 @@ sudo update-binfmts --enable
 cat /proc/sys/fs/binfmt_misc/qemu-aarch64
 ```
 
-## 2. Load the SDK Manager image
+### Load the SDK Manager image
 
 For Jetson AGX Xavier, use the Ubuntu 20.04 SDK Manager Docker image.
 
@@ -42,7 +44,7 @@ docker tag sdkmanager:[version].[build] sdkmanager:latest
 
 If you keep a different image tag, set `SDKMANAGER_IMAGE` in `.env` or export it before launching.
 
-## 3. Prepare local state
+### Prepare local state
 
 From this directory:
 
@@ -54,7 +56,7 @@ mkdir -p .sdkm/downloads .sdkm/nvidia_sdk
 
 Edit `.env` if needed. The main setting is `SDKM_MEDIA_DIR`, which should match your host media path.
 
-## 4. Put the Xavier into recovery mode
+### Put the Xavier into recovery mode
 
 For a dev kit:
 
@@ -70,7 +72,7 @@ Optional host check:
 lsusb | grep -i nvidia
 ```
 
-## 5. Start SDK Manager
+### Start SDK Manager
 
 With the wrapper:
 
@@ -88,8 +90,27 @@ docker compose run --rm sdkmanager
 
 Inside the wizard, select Jetson, choose the Xavier-compatible JetPack release, and continue through NVIDIA's normal interactive flow.
 
-## Notes
+#### Notes
 
 - The Docker image is CLI-only, so you interact through the terminal wizard.
 - Downloads and generated artifacts persist under `jetson-agx/.sdkm/`.
 - Host networking is enabled because SDK Manager may need it for Jetson USB device mode.
+
+## Setup on Target
+
+### Setup Docker environment
+
+```sh
+sudo apt update
+sudo apt install -y docker.io nvidia-container-toolkit nvidia-container-runtime
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"
+sudo systemctl restart docker
+```
+
+### Run Ollama server
+
+```sh
+sudo docker run --runtime nvidia -it --rm --network=host -v /mnt/ssd/ollama:/ollama -e OLLAMA_MODELS=/ollama   dustynv/ollama:r35.4.1
+```
