@@ -1,89 +1,15 @@
-x-sdkmanager-common: &sdkmanager-common
-  image: ${SDKMANAGER_IMAGE:-sdkmanager:latest}
-  privileged: true
-  stdin_open: true
-  tty: true
-  network_mode: ${SDKM_DOCKER_NETWORK:-host}
-  entrypoint:
-    - /bin/sh
-    - -lc
-  environment:
-    SDKM_LOGIN_TYPE: ${SDKM_LOGIN_TYPE:-devzone}
-    SDKM_STAY_LOGGED_IN: ${SDKM_STAY_LOGGED_IN:-true}
-    SDKM_COLLECT_USAGE: ${SDKM_COLLECT_USAGE:-disable}
-    SDKM_ARCHIVED_VERSIONS: ${SDKM_ARCHIVED_VERSIONS:-0}
-    SDKM_AUTO: ${SDKM_AUTO:-0}
-    SDKM_USB_PORT: ${SDKM_USB_PORT:-}
-    SDKM_EXTRA_ARGS: ${SDKM_EXTRA_ARGS:-}
-    JETPACK_VERSION: ${JETPACK_VERSION:-}
-    JETSON_TARGET: ${JETSON_TARGET:-}
-  volumes:
-    - /dev/bus/usb:/dev/bus/usb
-    - /dev:/dev
-    - ${SDKM_MEDIA_DIR}:/media/nvidia:slave
-    - ${SDKM_DOWNLOADS_DIR}:/home/nvidia/Downloads/nvidia/sdkm_downloads
-    - ${SDKM_TARGET_IMAGE_DIR}:/home/nvidia/nvidia_sdk
-
 services:
-  sdkmanager-query:
-    <<: *sdkmanager-common
+  sdkmanager:
+    image: ${SDKMANAGER_IMAGE:-sdkmanager:latest}
+    privileged: true
+    stdin_open: true
+    tty: true
+    network_mode: ${SDKM_DOCKER_NETWORK:-host}
     command:
-      - >
-        exec sdkmanager --cli --query non-interactive
-        --login-type "$${SDKM_LOGIN_TYPE}"
-        $${SDKM_EXTRA_ARGS}
-
-  sdkmanager-list-connected:
-    <<: *sdkmanager-common
-    command:
-      - >
-        exec sdkmanager --cli --list-connected Jetson
-        $${SDKM_EXTRA_ARGS}
-
-  sdkmanager-download-only:
-    <<: *sdkmanager-common
-    command:
-      - >
-        set -eu;
-        if [ -z "$${JETPACK_VERSION}" ] || [ -z "$${JETSON_TARGET}" ]; then
-          echo "JETPACK_VERSION and JETSON_TARGET are required for download-only" >&2;
-          exit 1;
-        fi;
-        cmd="exec sdkmanager --cli --action downloadonly --login-type \"$${SDKM_LOGIN_TYPE}\" --product Jetson --target-os Linux --version \"$${JETPACK_VERSION}\" --target \"$${JETSON_TARGET}\" --license accept --stay-logged-in \"$${SDKM_STAY_LOGGED_IN}\" --collect-usage-data \"$${SDKM_COLLECT_USAGE}\" --target-image-folder /home/nvidia/nvidia_sdk --download-folder /home/nvidia/Downloads/nvidia/sdkm_downloads --exit-on-finish";
-        if [ "$${SDKM_ARCHIVED_VERSIONS}" = "1" ]; then
-          cmd="$${cmd} --archived-versions";
-        fi;
-        if [ "$${SDKM_AUTO}" = "1" ]; then
-          cmd="$${cmd} --auto";
-        fi;
-        if [ -n "$${SDKM_USB_PORT}" ]; then
-          cmd="$${cmd} --usb-port \"$${SDKM_USB_PORT}\"";
-        fi;
-        if [ -n "$${SDKM_EXTRA_ARGS}" ]; then
-          cmd="$${cmd} $${SDKM_EXTRA_ARGS}";
-        fi;
-        eval "$${cmd}"
-
-  sdkmanager-flash:
-    <<: *sdkmanager-common
-    command:
-      - >
-        set -eu;
-        if [ -z "$${JETPACK_VERSION}" ] || [ -z "$${JETSON_TARGET}" ]; then
-          echo "JETPACK_VERSION and JETSON_TARGET are required for flash" >&2;
-          exit 1;
-        fi;
-        cmd="exec sdkmanager --cli --action install --login-type \"$${SDKM_LOGIN_TYPE}\" --product Jetson --target-os Linux --version \"$${JETPACK_VERSION}\" --target \"$${JETSON_TARGET}\" --flash --license accept --stay-logged-in \"$${SDKM_STAY_LOGGED_IN}\" --collect-usage-data \"$${SDKM_COLLECT_USAGE}\" --target-image-folder /home/nvidia/nvidia_sdk --download-folder /home/nvidia/Downloads/nvidia/sdkm_downloads --exit-on-finish";
-        if [ "$${SDKM_ARCHIVED_VERSIONS}" = "1" ]; then
-          cmd="$${cmd} --archived-versions";
-        fi;
-        if [ "$${SDKM_AUTO}" = "1" ]; then
-          cmd="$${cmd} --auto";
-        fi;
-        if [ -n "$${SDKM_USB_PORT}" ]; then
-          cmd="$${cmd} --usb-port \"$${SDKM_USB_PORT}\"";
-        fi;
-        if [ -n "$${SDKM_EXTRA_ARGS}" ]; then
-          cmd="$${cmd} $${SDKM_EXTRA_ARGS}";
-        fi;
-        eval "$${cmd}"
+      - --cli
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+      - /dev:/dev
+      - ${SDKM_MEDIA_DIR}:/media/nvidia:slave
+      - ${SDKM_DOWNLOADS_DIR}:/home/nvidia/Downloads/nvidia/sdkm_downloads
+      - ${SDKM_TARGET_IMAGE_DIR}:/home/nvidia/nvidia_sdk
