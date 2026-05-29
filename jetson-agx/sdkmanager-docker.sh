@@ -3,11 +3,19 @@
 set -euo pipefail
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+env_file=${SDKM_ENV_FILE:-"$script_dir/.env"}
+
+if [[ -f "$env_file" ]]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "$env_file"
+  set +a
+fi
+
 state_dir=${SDKM_STATE_DIR:-"$script_dir/.sdkm"}
 downloads_dir=${SDKM_DOWNLOADS_DIR:-"$state_dir/downloads"}
 target_image_dir=${SDKM_TARGET_IMAGE_DIR:-"$state_dir/nvidia_sdk"}
 image_name=${SDKMANAGER_IMAGE:-sdkmanager:latest}
-login_type=${SDKM_LOGIN_TYPE:-devzone}
 docker_network=${SDKM_DOCKER_NETWORK:-host}
 media_dir=${SDKM_MEDIA_DIR:-"/media/$USER"}
 compose_file=${SDKM_COMPOSE_FILE:-"$script_dir/docker-compose.yml"}
@@ -25,6 +33,7 @@ Environment:
   SDKM_DOWNLOADS_DIR     Host directory for downloads
   SDKM_TARGET_IMAGE_DIR  Host directory for generated flash images
   SDKM_COMPOSE_FILE      Override the compose file path
+  SDKM_ENV_FILE          Override the optional .env file path
 
 Examples:
   ./sdkmanager-docker.sh
