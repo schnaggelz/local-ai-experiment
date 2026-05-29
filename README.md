@@ -94,6 +94,11 @@ The Compose file exposes these environment variables:
 - `OLLAMA_PORT`
 - `OLLAMA_HOST`
 - `OLLAMA_CONTEXT_LENGTH`
+- `OLLAMA_FLASH_ATTENTION`
+- `OLLAMA_KEEP_ALIVE`
+- `OLLAMA_KV_CACHE_TYPE`
+- `OLLAMA_MAX_LOADED_MODELS`
+- `OLLAMA_MAX_QUEUE`
 - `OLLAMA_MAX_VRAM`
 - `OLLAMA_NUM_PARALLEL`
 
@@ -102,4 +107,8 @@ Defaults are defined in `docker-compose.yml` and can be overridden in the servic
 ### Notes
 
 - The named volume `ollama_data` persists downloaded models across container restarts.
+- `OLLAMA_KEEP_ALIVE=5m` keeps a recently used model warm without pinning it indefinitely.
+- `OLLAMA_MAX_LOADED_MODELS=1` is a safer default for a single local ROCm GPU where VRAM is the main constraint.
+- `OLLAMA_FLASH_ATTENTION=1` and `OLLAMA_KV_CACHE_TYPE=q8_0` give a more practical default for a 24 GB local GPU by reducing KV cache memory pressure while keeping quality loss modest; switch back to `f16` if you want the quality-first setting.
+- `OLLAMA_MAX_QUEUE=16` is a deliberate low default for simple local use so overload fails sooner instead of building a long request backlog.
 - If you run Compose from outside `docker/services/ollama-rocm`, pass `--env-file docker/services/ollama-rocm/.env` so the service-specific overrides are used consistently.
