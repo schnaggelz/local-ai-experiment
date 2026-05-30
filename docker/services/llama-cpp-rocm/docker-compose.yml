@@ -40,7 +40,7 @@ services:
       LLAMA_VERBOSE: ${LLAMA_VERBOSE:-0}
       LLAMA_EXTRA_ARGS: ${LLAMA_EXTRA_ARGS:-}
     volumes:
-      - ${MODELS_DIR:-./models}:/models
+      - ${MODELS_DIR:-/srv/ollama/models}:/models
       - ./run-llama-server.sh:/run-llama-server.sh:ro
     entrypoint:
       - /bin/sh
