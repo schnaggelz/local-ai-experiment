@@ -164,3 +164,9 @@ Get logs with
 ```sh
 docker logs ollama -f
 ```
+
+Enter container with:
+
+```sh
+docker exec -it ollama /bin/bash
+```
