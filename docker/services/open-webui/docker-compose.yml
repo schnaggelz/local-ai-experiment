@@ -24,7 +24,11 @@ services:
       - "8081:8080"
     environment:
       - SEARXNG_BASE_URL=http://localhost:8081/
-      - SEARXNG_SECRET_KEY=change-me
+      - SEARXNG_SECRET=${SEARXNG_SECRET:?set SEARXNG_SECRET in your environment}
+    volumes:
+      - ./config/searxng:/etc/searxng
+      - searxng_data:/var/cache/searxng
 
 volumes:
   open-webui_data:
+  searxng_data:
