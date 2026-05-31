@@ -57,15 +57,17 @@
         "chunk_min_size_target": 0,
         "chunk_overlap": 100,
         "file": {
-            "allowed_extensions": []
+            "allowed_extensions": [],
+            "max_size": null,
+            "max_count": null
         },
         "web": {
             "search": {
                 "enable": true,
                 "engine": "searxng",
                 "trust_env": true,
-                "result_count": 3,
-                "concurrent_requests": 0,
+                "result_count": 4,
+                "concurrent_requests": 5,
                 "domain": {
                     "filter_list": []
                 },
@@ -133,12 +135,67 @@
         "youtube_loader_language": [
             "en"
         ],
-        "youtube_loader_proxy_url": ""
+        "youtube_loader_proxy_url": "",
+        "embedding_engine": "ollama",
+        "embedding_model": "nomic-embed-text:latest",
+        "embedding_batch_size": 1,
+        "enable_async_embedding": true,
+        "embedding_concurrent_requests": 0,
+        "openai_api_base_url": "https://api.openai.com/v1",
+        "openai_api_key": "",
+        "ollama": {
+            "url": "http://192.168.242.55:11434",
+            "key": ""
+        },
+        "azure_openai": {
+            "base_url": "",
+            "api_key": "",
+            "api_version": ""
+        }
     },
     "google_drive": {
         "enable": false
     },
     "onedrive": {
         "enable": false
+    },
+    "file": {
+        "image_compression_width": null,
+        "image_compression_height": null
+    },
+    "openai": {
+        "enable": false,
+        "api_base_urls": [
+            "https://api.openai.com/v1"
+        ],
+        "api_keys": [
+            ""
+        ],
+        "api_configs": {
+            "0": {
+                "enable": true
+            }
+        }
+    },
+    "ollama": {
+        "enable": true,
+        "base_urls": [
+            "http://192.168.242.55:11434",
+            "http://192.168.242.97:11434"
+        ],
+        "api_configs": {
+            "0": {
+                "enable": true
+            },
+            "1": {
+                "enable": true,
+                "tags": [],
+                "prefix_id": "",
+                "model_ids": [],
+                "connection_type": "local",
+                "auth_type": "none",
+                "key": ""
+            }
+        }
     }
 }
