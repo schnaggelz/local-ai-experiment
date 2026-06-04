@@ -116,4 +116,4 @@ Defaults are defined in `docker-compose.yml` and can be overridden in the servic
 
 ## Nvidia Jetson AGX Ollama Server
 
-See [README](docker/services/jetson-agx/README.md)
+See [README](docker/services/jetson-sdk/README.md)
