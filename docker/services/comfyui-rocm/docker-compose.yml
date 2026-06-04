@@ -1,0 +1,20 @@
+services:
+  comfyui:
+    build: .
+    container_name: comfyui-rocm
+    ports:
+      - "8188:8188"
+    volumes:
+      # Map model weights and outputs to your host machine
+      - ./models:/workspace/ComfyUI/models
+      - ./output:/workspace/ComfyUI/output
+      - ./custom_nodes:/workspace/ComfyUI/custom_nodes
+    devices:
+      - "/dev/kfd:/dev/kfd"
+      - "/dev/dri:/dev/dri"
+    group_add:
+      - video
+      - render
+    environment:
+      - HSA_OVERRIDE_GFX_VERSION=12.0.1 # RDNA4 architecture override for cards like the RX 9070 XT
+    restart: unless-stopped
