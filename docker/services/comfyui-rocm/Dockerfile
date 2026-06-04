@@ -32,9 +32,9 @@ RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install PyTorch with ROCm support and ComfyUI requirements
-# Note: Using rocm6.2 wheel repo as PyTorch nightly/stable typically tracks slightly behind the standalone ROCm releases
+# Note: Using rocm7.2 wheel repo as PyTorch nightly/stable typically tracks slightly behind the standalone ROCm releases
 RUN pip install --upgrade pip \
-    && pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2 \
+    && pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm7.2 \
     && pip install -r requirements.txt
 
 EXPOSE 8188
