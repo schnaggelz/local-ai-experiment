@@ -12,17 +12,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ROCm
-RUN wget https://repo.radeon.com/amdgpu-install/7.2.4/ubuntu/noble/amdgpu-install_7.2.4.70204-1_all.deb \
+RUN wget https://repo.radeon.com/amdgpu-install/7.2.3/ubuntu/noble/amdgpu-install_7.2.3.70203-1_all.deb \
     && apt-get update \
-    && apt-get install -y ./amdgpu-install_7.2.4.70204-1_all.deb \
-    && rm ./amdgpu-install_7.2.4.70204-1_all.deb \
+    && apt-get install -y ./amdgpu-install_7.2.3.70203-1_all.deb \
+    && rm ./amdgpu-install_7.2.3.70203-1_all.deb \
     && apt-get update && apt-get install -y rocm \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
 
 # Clone ComfyUI (The standard backend for running high-end image models)
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git comfyui
 
 WORKDIR /workspace/comfyui
 
