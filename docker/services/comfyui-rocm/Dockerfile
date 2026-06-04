@@ -22,9 +22,12 @@ RUN wget https://repo.radeon.com/amdgpu-install/7.2.3/ubuntu/noble/amdgpu-instal
 WORKDIR /workspace
 
 # Clone ComfyUI (The standard backend for running high-end image models)
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git comfyui
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git
 
-WORKDIR /workspace/comfyui
+# Clone ComfyUI-Manager
+RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git ComfyUI/custom_nodes/ComfyUI-Manager
+
+WORKDIR /workspace/ComfyUI
 
 # Setup Python virtual environment
 ENV VIRTUAL_ENV=/opt/comfyui_venv
