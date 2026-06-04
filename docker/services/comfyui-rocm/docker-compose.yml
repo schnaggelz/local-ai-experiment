@@ -12,9 +12,6 @@ services:
     devices:
       - "/dev/kfd:/dev/kfd"
       - "/dev/dri:/dev/dri"
-    group_add:
-      - video
-      - render
     environment:
       - HSA_OVERRIDE_GFX_VERSION=12.0.1 # RDNA4 architecture override for cards like the RX 9070 XT
     restart: unless-stopped
