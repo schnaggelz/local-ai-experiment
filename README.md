@@ -116,4 +116,69 @@ Defaults are defined in `docker-compose.yml` and can be overridden in the servic
 
 ## Nvidia Jetson AGX Ollama Server
 
-See [README](docker/services/jetson-sdk/README.md)
+See [README](docker/services/jetson-sdk/README.md) for setting up the AGX.
+
+### Run Ollama server
+
+Run the standard ollama docker container, it already contains Jetpack support:
+
+```sh
+docker run -d --runtime nvidia \
+ --name ollama \
+ --network host \
+ -e JETSON_JETPACK=5 \
+ -e OLLAMA_MODELS=/models \
+ -e OLLAMA_CONTEXT_LENGTH=32768 \
+ -v /mnt/ssd/ollama:/models \
+ ollama/ollama:latest
+```
+If you want the lightest-weight option, keep the `docker run` command and add `--restart unless-stopped`.
+
+For the most reliable setup, run the container under systemd so it starts at boot and is managed like a normal service.
+
+Create `/etc/systemd/system/ollama.service` with:
+
+```ini
+[Unit]
+Description=Ollama on Jetson AGX Xavier
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=unless-stopped
+ExecStart=/usr/bin/docker run --rm --runtime nvidia \
+	--name ollama \
+	--network host \
+	-e JETSON_JETPACK=5 \
+	-e OLLAMA_MODELS=/models \
+	-e OLLAMA_CONTEXT_LENGTH=32768 \
+	-e OLLAMA_MAX_LOADED_MODELS=1 \
+	-e OLLAMA_NUM_PARALLEL=1 \
+	-v /mnt/ssd/ollama:/models \
+	ollama/ollama:latest
+ExecStop=/usr/bin/docker stop ollama
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then enable it:
+
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable --now ollama.service
+```
+
+### Notes
+
+Get logs with
+
+```sh
+docker logs ollama -f
+```
+
+Enter container with:
+
+```sh
+docker exec -it ollama /bin/bash
+```
