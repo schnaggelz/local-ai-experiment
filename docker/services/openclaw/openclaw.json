@@ -1,0 +1,199 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "/home/timon/.distrobox/ubuntu-openclaw/.openclaw/workspace",
+      "model": {
+        "primary": "ollama-medium/qwen3:30b"
+      },
+      "models": {
+        "ollama-small/qwen3:14b": {},
+        "ollama-medium/qwen3:30b": {}
+      }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "xxx"
+    },
+    "port": 18789,
+    "bind": "lan",
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "controlUi": {
+      "allowInsecureAuth": true,
+      "allowedOrigins": [
+        "http://localhost:18789",
+        "http://127.0.0.1:18789"
+      ]
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send",
+        "sms.search"
+      ]
+    }
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "tools": {
+    "profile": "coding",
+    "web": {
+      "search": {
+        "provider": "duckduckgo",
+        "enabled": true
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "ollama": {
+        "enabled": true
+      },
+      "duckduckgo": {
+        "enabled": true
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "ollama-small": {
+        "baseUrl": "http://192.168.242.97:11434",
+        "apiKey": "",
+        "api": "ollama",
+        "models": [
+          {
+            "id": "gemma4",
+            "name": "gemma4",
+            "api": "ollama",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 16384,
+            "maxTokens": 8192,
+            "compat": {
+              "supportsUsageInStreaming": true
+            }
+          },
+          {
+            "id": "qwen3:14b",
+            "name": "qwen3:14b",
+            "api": "ollama",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 16384,
+            "maxTokens": 8192,
+            "compat": {
+              "supportsUsageInStreaming": true,
+              "supportsTools": true
+            }
+          }
+        ]
+      },
+      "ollama-medium": {
+        "baseUrl": "http://192.168.242.99:11434",
+        "api": "ollama",
+        "apiKey": "OLLAMA_API_KEY",
+        "models": [
+          {
+            "id": "gemma4",
+            "name": "gemma4",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 16384,
+            "maxTokens": 8192,
+            "compat": {
+              "supportsUsageInStreaming": true
+            }
+          },
+          {
+            "id": "qwen3:30b",
+            "name": "qwen3:30b",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 16384,
+            "maxTokens": 8192,
+            "compat": {
+              "supportsTools": true,
+              "supportsUsageInStreaming": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "auth": {
+    "profiles": {
+      "ollama-small:default": {
+        "provider": "ollama-small",
+        "mode": "api_key"
+      },
+      "ollama-medium:default": {
+        "provider": "ollama-medium",
+        "mode": "api_key"
+      }
+    }
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "session-memory": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "wizard": {
+    "lastRunAt": "2026-05-14T16:46:07.770Z",
+    "lastRunVersion": "2026.5.7",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.5.7",
+    "lastTouchedAt": "2026-05-14T16:46:07.799Z"
+  }
+}
