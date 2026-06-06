@@ -1,0 +1,28 @@
+name: Local Config
+version: 1.0.0
+schema: v1
+models:
+  - name: Gemma4 26b (AGX)
+    provider: ollama
+    model: gemma4:26b
+    roles:
+      - chat
+    apiBase: http://192.168.242.55:11434
+    capabilities:
+      - tool_use
+    requestOptions:
+      extraBodyProperties:
+        num_gpu: 99
+        num_ctx: 32768
+  - name: Gemma4 26b (DT1)
+    provider: ollama
+    model: gemma4:26b
+    roles:
+      - chat
+    apiBase: http://192.168.242.99:11434
+    capabilities:
+      - tool_use
+    requestOptions:
+      extraBodyProperties:
+        num_gpu: 99
+        num_ctx: 32768
