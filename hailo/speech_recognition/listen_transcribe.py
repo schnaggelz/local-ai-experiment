@@ -2,6 +2,7 @@ import sys
 import argparse
 import numpy as np
 import pyaudio
+import webrtcvad
 
 FORMAT = pyaudio.paInt16
 
