@@ -1,4 +1,36 @@
-# Install Hailo SDK
+# Install Hailo on Raspberry Pi 5
+
+## Hailo PCIe Driver
+
+For Hailo H8:
+
+TODO
+
+For hailo H10:
+
+```sh
+# PCIe driver and required kernel headers
+sudo apt install h10-hailort-pcie-driver linux-headers-$(uname -r)
+
+# Verify
+ls -l /dev/hailo*
+
+```
+
+## Hailo RT
+
+For Hailo H8:
+
+TODO
+
+For hailo H10:
+
+```sh
+# Run-time environment
+sudo apt install h10-hailort python3-h10-hailort
+
+# Verify
+```
 
 ## Hailo Data Flow Compiler
 
