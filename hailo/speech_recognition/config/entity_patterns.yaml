@@ -1,0 +1,20 @@
+# Entity mapping for voice_control.py
+#
+# Each entry has:
+#   pattern:   Python regex string matched against the transcribed utterance
+#              (case-insensitive). Use alternation for aliases.
+#   entity_id: Home Assistant entity ID to control.
+#
+# Rules are evaluated top-to-bottom; the first match wins.
+
+- pattern: '\b(wohnzimmer|wohn|living room|livingroom)\b'
+  entity_id: light.signify_netherlands_b_v_lwa024_3
+
+# - pattern: '\b(küche|küch|kitchen)\b'
+#   entity_id: light.kitchen
+
+# - pattern: '\b(schlafzimmer|schlaf|bedroom)\b'
+#   entity_id: light.bedroom
+
+# - pattern: '\b(büro|arbeitszimmer|office)\b'
+#   entity_id: light.office

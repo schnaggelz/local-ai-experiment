@@ -2,3 +2,4 @@ setuptools<70
 pyaudio
 numpy
 webrtcvad
+pyyaml

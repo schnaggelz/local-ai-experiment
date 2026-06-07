@@ -1,0 +1,18 @@
+# Voice command patterns for CommandTranslator.
+#
+# Each entry has:
+#   pattern: Python regex string (case-insensitive, \b word boundaries recommended)
+#   action:  one of: turn_on | turn_off | toggle
+#
+# Rules are evaluated top-to-bottom; the first match wins.
+
+# Turn on
+- pattern: '\b(an|ein|anmachen|einschalten|an machen|ein machen|turn on|switch on|light on|lights on)\b'
+  action: turn_on
+
+# Turn off
+- pattern: '\b(aus|ausschalten|aus machen|abschalten|turn off|switch off|light off|lights off)\b'
+  action: turn_off
+
+- pattern: '\b(toggle|umschalten|wechseln)\b'
+  action: toggle
