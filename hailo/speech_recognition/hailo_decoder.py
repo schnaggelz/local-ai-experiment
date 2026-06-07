@@ -27,8 +27,16 @@ class HailoDecoder:
         
         audio_data = np.frombuffer(raw_audio, dtype=np.int16)
 
-        # Convert 16-bit to float32 and normalize
+        # Convert 16-bit to float32 and normalize to [-1, 1]
         audio_data = audio_data.astype(np.float32) / 32768.0
+
+        # RMS normalization so quiet/distant mic input is amplified to a consistent level.
+        # A gain cap of 20x prevents excessive amplification of near-silence frames
+        # that slipped through the VAD.
+        rms = np.sqrt(np.mean(audio_data ** 2))
+        if rms > 1e-4:
+            gain = min(0.1 / rms, 20.0)
+            audio_data = np.clip(audio_data * gain, -1.0, 1.0)
 
         # Ensure little-endian format as expected by the model
         audio_data = audio_data.astype('<f4')
@@ -37,7 +45,7 @@ class HailoDecoder:
         segments = self._pipeline.generate_all_segments(
             audio_data=audio_data,
             task=Speech2TextTask.TRANSCRIBE,
-            language="en",
+            language=self._language,
             timeout_ms=15000)
 
         if segments and len(segments) > 0:
