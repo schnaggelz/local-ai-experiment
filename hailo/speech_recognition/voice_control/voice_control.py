@@ -6,11 +6,11 @@ from contextlib import contextmanager
 
 import pyaudio
 
-from command_translator import CommandTranslator
-from device_discovery import DeviceDiscovery
-from home_assistant import HomeAssistant
-from hailo_decoder import HailoDecoder
-from speech_capture import SpeechCapture
+from common.device_discovery import DeviceDiscovery
+from common.hailo_decoder import HailoDecoder
+from common.speech_capture import SpeechCapture
+from voice_control.command_translator import CommandTranslator
+from voice_control.home_assistant import HomeAssistant
 
 WAKE_WORD_DEFAULT = "maus"
 ACTIVE_TIME_WINDOW = 10  # seconds to stay active after wake word

@@ -5,9 +5,9 @@ import time
 import pyaudio
 from contextlib import contextmanager
 
-from device_discovery import DeviceDiscovery
-from speech_capture import SpeechCapture
-from hailo_decoder import HailoDecoder
+from common.device_discovery import DeviceDiscovery
+from common.speech_capture import SpeechCapture
+from common.hailo_decoder import HailoDecoder
 
 WAKE_WORD_DEFAULT = "maus"
 ACTIVE_TIME_WINDOW = 10  # seconds to stay active after wake word

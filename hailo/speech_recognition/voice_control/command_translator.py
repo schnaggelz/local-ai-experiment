@@ -7,8 +7,8 @@ import yaml
 
 log = logging.getLogger(__name__)
 
-_PATTERNS_FILE = Path(__file__).parent / "config" / "command_patterns.yaml"
-_ENTITIES_FILE = Path(__file__).parent / "config" / "entity_patterns.yaml"
+_PATTERNS_FILE = Path(__file__).parent.parent / "config" / "command_patterns.yaml"
+_ENTITIES_FILE = Path(__file__).parent.parent / "config" / "entity_patterns.yaml"
 
 
 class CommandTranslator:
