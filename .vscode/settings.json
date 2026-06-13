@@ -1,0 +1,6 @@
+{
+    "continue.enableTabAutocomplete": true,
+    "github.copilot.enable": {
+        "*": false
+    }
+}
