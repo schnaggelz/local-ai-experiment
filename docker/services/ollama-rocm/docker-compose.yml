@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     image: ollama-rocm:latest
     container_name: ollama-rocm
-    # Required devices for AMD ROCm to access the GPU
+    restart: unless-stopped
     devices:
       - /dev/dri:/dev/dri
       - /dev/kfd:/dev/kfd
