@@ -1,16 +1,24 @@
-# This is an example configuration file
-# To learn more, see the full config.yaml reference: https://docs.continue.dev/reference
-
-name: Example Config
+name: Workspace
 version: 1.0.0
 schema: v1
 
-# Define which models can be used
-# https://docs.continue.dev/customization/models
 models:
+  - name: Gemma4 31B (99)
+    provider: ollama
+    model: gemma4:31b
+    contextLength: 16384
+    roles:
+      - chat
+      - edit
+      - apply
+      - summarize
+    capabilities:
+      - tool_use
+    apiBase: http://192.168.242.99:11434
   - name: Gemma4 26B (99)
     provider: ollama
     model: gemma4:26b
+    contextLength: 131072
     roles:
       - chat
       - edit
@@ -22,20 +30,23 @@ models:
   - name: Gemma4 E4B (97)
     provider: ollama
     model: gemma4:e4b
+    contextLength: 65536
     roles:
       - chat
       - edit
       - apply
       - summarize
+      - autocomplete
     capabilities:
       - tool_use
     apiBase: http://192.168.242.97:11434
-  - name: Gemma4 E2B (55)
+  - name: Gemma4 E2B (97)
     provider: ollama
     model: gemma4:e2b
+    contextLength: 16384
     roles:
       - autocomplete
-    apiBase: http://192.168.242.55:11434
+    apiBase: http://192.168.242.97:11434
   - name: Nomic Embed
     provider: ollama
     model: nomic-embed-text:latest
