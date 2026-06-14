@@ -6,7 +6,7 @@ models:
   - name: Gemma4 31B (99)
     provider: ollama
     model: gemma4:31b
-    contextLength: 16384
+    contextLength: 32786
     roles:
       - chat
       - edit
@@ -47,7 +47,13 @@ models:
     roles:
       - autocomplete
     apiBase: http://192.168.242.97:11434
-  - name: Nomic Embed
+  - name: Qwen 2.5 Coder 1.5B (55)
+    provider: ollama
+    model: qwen2.5-coder:1.5b
+    roles:
+      - autocomplete
+    apiBase: http://192.168.242.55:11434
+  - name: Nomic Embed (55)
     provider: ollama
     model: nomic-embed-text:latest
     roles:
