@@ -1,5 +1,5 @@
 services:
-  sdkmanager:
+  nvidia-sdkmanager:
     image: ${SDKMANAGER_IMAGE:-sdkmanager:latest}
     privileged: true
     stdin_open: true

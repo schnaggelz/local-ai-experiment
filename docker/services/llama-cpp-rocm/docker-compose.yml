@@ -1,5 +1,5 @@
 services:
-  llama-server:
+  llamacpp-rocm:
     build:
       context: .
       dockerfile: Dockerfile

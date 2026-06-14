@@ -1,5 +1,5 @@
 services:
-  comfyui:
+  comfyui-rocm:
     build: .
     container_name: comfyui-rocm
     ports:

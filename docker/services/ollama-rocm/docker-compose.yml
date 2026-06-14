@@ -1,5 +1,5 @@
 services:
-  rocm-ollama:
+  ollama-rocm:
     build:
       context: .
       dockerfile: Dockerfile
