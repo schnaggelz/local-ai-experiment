@@ -3,18 +3,6 @@ version: 1.0.0
 schema: v1
 
 models:
-  - name: Gemma4 31B (99)
-    provider: ollama
-    model: gemma4:31b
-    contextLength: 32786
-    roles:
-      - chat
-      - edit
-      - apply
-      - summarize
-    capabilities:
-      - tool_use
-    apiBase: http://192.168.242.99:11434
   - name: Gemma4 26B (99)
     provider: ollama
     model: gemma4:26b
@@ -50,6 +38,7 @@ models:
   - name: Qwen 2.5 Coder 1.5B (55)
     provider: ollama
     model: qwen2.5-coder:1.5b
+    contextLength: 8192
     roles:
       - autocomplete
     apiBase: http://192.168.242.55:11434
