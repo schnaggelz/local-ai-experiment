@@ -1,5 +1,6 @@
 import pygame
 import sys
+
 from tank_game.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, GROUND_LEVEL, COLOR_BLUE, COLOR_RED
 from tank_game.entities import Tank
 from tank_game.engine import GameEngine

@@ -38,8 +38,8 @@ class GameEngine:
             if not self.last_action_done:
                 if keys[pygame.K_UP]: player.angle -= 1
                 if keys[pygame.K_DOWN]: player.angle += 1
-                if keys[pygame.K_RIGHT]: player.power = min(MAX_POWER, player.power + 0.5)
-                if keys[pygame.K_LEFT]: player.power = max(0, player.power - 0.5)
+                if keys[pygame.K_RIGHT]: player.power = min(MAX_POWER, player.power + 1)
+                if keys[pygame.K_LEFT]: player.power = max(0, player.power - 1)
             
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 self._fire()
@@ -48,8 +48,8 @@ class GameEngine:
             if not self.last_action_done:
                 if keys[pygame.K_w]: player.angle -= 1
                 if keys[pygame.K_s]: player.angle += 1
-                if keys[pygame.K_d]: player.power = min(MAX_POWER, player.power + 0.5)
-                if keys[pygame.K_a]: player.power = max(0, player.power - 0.5)
+                if keys[pygame.K_d]: player.power = min(MAX_POWER, player.power + 1)
+                if keys[pygame.K_a]: player.power = max(0, player.power - 1)
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 self._fire()
@@ -68,7 +68,7 @@ class GameEngine:
         tip_x, tip_y = player.get_cannon_tip()
         self.projectiles.append(Projectile(tip_x, tip_y, vx, vy, self.current_player_idx))
         
-        player.power = 0 # Reset power after shot
+        print("power:{}".format(player.power))
         self.last_action_done = True
 
     def update(self) -> None:
@@ -77,7 +77,7 @@ class GameEngine:
 
         # Update projectiles
         for p in self.projectiles[:]:
-            p.update_correct()
+            p.update()
             
             # Hit ground
             if p.y >= GROUND_LEVEL:
@@ -128,8 +128,8 @@ class GameEngine:
                          (20, 20, int(power_width), 24))
         
         if self.game_over and self.winner:
-            font = pygame.font.SysFont("Arial", 72)
-            text = font.render(f"PLAYER {self.winner.id} WINS!", True, COLOR_WHITE)
-            screen.blit(text, (SCREEN_WIDTH//2 - 300, SCREEN_HEIGHT//2))
+            #font = pygame.font.SysFont("Arial", 72)
+            #text = font.render(f"PLAYER {self.winner.id} WINS!", True, COLOR_WHITE)
+            screen.blit(f"PLAYER {self.winner.id} WINS!", (SCREEN_WIDTH//2 - 300, SCREEN_HEIGHT//2))
 
 import math # Added missing import inside engine

@@ -16,12 +16,7 @@ class Projectile:
     radius: float = 5.0
 
     def update(self) -> None:
-        self.vy += GRAVITY
-        self.x += self.vx
-        self.y += self.yy if hasattr(self, 'yy') else self.vy # safety check for physics logic
-        # Wait, I'll fix the math in the engine. Let's redefine update correctly.
-
-    def update_correct(self) -> None:
+        """Updates the projectile position based on velocity and gravity."""
         self.vy += GRAVITY
         self.x += self.vx
         self.y += self.vy
@@ -34,7 +29,7 @@ class Tank:
     health: float
     color: tuple[int, int, int]
     angle: float = -45.0  # degrees, 0 is horizontal, -90 is vertical
-    power: float = 0.0
+    power: float = 50.0
     
     def draw(self, surface: pygame.Surface) -> None:
         # Draw tank body
