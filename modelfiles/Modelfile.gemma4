@@ -1,0 +1,13 @@
+# Specify the base model
+FROM gemma4:26b
+
+# Set the context size to 262,144 tokens
+PARAMETER num_ctx 262144
+
+# Standard Gemma 4 sampling configurations for optimal performance
+PARAMETER temperature 1.0
+PARAMETER top_p 0.95
+PARAMETER top_k 64
+
+# Add a custom system prompt to guide the model's behavior
+SYSTEM """You are an expert AI assistant with an extended context window. You have access to a 262,144 token memory space. Feel free to process large codebases, multi-turn histories, or long technical documents thoroughly."""
