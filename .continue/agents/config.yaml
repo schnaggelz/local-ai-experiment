@@ -3,10 +3,22 @@ version: 1.0.0
 schema: v1
 
 models:
+  - name: Gemma4 31B (99)
+    provider: ollama
+    model: gemma4:31b
+    contextLength: 65536
+    roles:
+      - chat
+      - edit
+      - apply
+      - summarize
+    capabilities:
+      - tool_use
+    apiBase: http://192.168.242.99:11434
   - name: Gemma4 26B (99)
     provider: ollama
     model: gemma4:26b
-    contextLength: 131072
+    contextLength: 262144
     roles:
       - chat
       - edit
