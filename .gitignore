@@ -5,3 +5,5 @@
 **/*.wav
 **/*.hef
 .pytest*
+**/build
+**/*.egg-info
