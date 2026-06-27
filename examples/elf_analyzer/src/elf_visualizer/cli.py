@@ -6,6 +6,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from rich.console import Console
+
 from elf_visualizer.parser import parse_elf
 from elf_visualizer.visualizer import render_section_table, render_section_content
 from elf_visualizer.exceptions import ELFParseError
