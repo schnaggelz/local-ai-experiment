@@ -1,0 +1,25 @@
+[project]
+name = "elf-visualizer"
+version = "0.1.0"
+description = "A command-line ELF visualizer"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "schnaggelz", email = "schnaggelz@gmx.de" }
+]
+dependencies = [
+    "pydantic>=2.7.0",
+    "rich>=13.0.0",
+    "pyelftools>=0.30.0",
+]
+
+[project.scripts]
+elf_visualizer = "elf_visualizer.cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
