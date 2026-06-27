@@ -1,0 +1,16 @@
+# Specify the base Cohere North model
+FROM north-mini-code-1.0
+
+# Pin the context size to 262,144 tokens 
+PARAMETER num_ctx 262144
+
+# Temperature adjustment for structural coding precision and agent stability
+PARAMETER temperature 0.3
+PARAMETER top_p 0.9
+PARAMETER top_k 40
+
+# Prevent premature truncation of complex code blocks or thinking logs
+PARAMETER num_predict 4096
+
+# Crucial System Prompt to activate North's agentic scaffolds and native tool-handling
+SYSTEM """You are North Mini Code, an advanced agentic software engineering assistant. You operate using interleaved thinking. Always reason through complex architectural decisions, dependency trees, and edge cases inside a systematic line of thought before generating functional, production-grade code or executing tools. Format tool definitions cleanly as JSON schemas when requested."""
