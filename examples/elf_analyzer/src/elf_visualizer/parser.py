@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import os
 from elftools.elf.elffile import ELFFile
-from .models import SectionInfo, ElfFile
+from .models import SectionInfo, InputFile
 from .exceptions import ELFParseError
 
-def parse_elf(file_path: str) -> ElfFile:
+def parse_elf(file_path: str) -> InputFile:
     """
     Parses an ELF file and extracts section information safely.
     """
@@ -46,7 +46,7 @@ def parse_elf(file_path: str) -> ElfFile:
                 )
                 sections_data.append(info)
 
-            return ElfFile(path=file_path, sections=sections_data)
+            return InputFile(path=file_path, sections=sections_data)
     except Exception as e:
         raise ELFParseError(f"Failed to parse ELF file: {str(e)}")
 

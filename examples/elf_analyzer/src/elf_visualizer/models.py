@@ -17,7 +17,7 @@ class SectionInfo(BaseModel):
     content: Optional[bytes] = None
 
 
-class ElfFile(BaseModel):
+class InputFile(BaseModel):
     """Represents the parsed ELF file containing multiple sections."""
     model_config = ConfigDict(frozen=True)
 

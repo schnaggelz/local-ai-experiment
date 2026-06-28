@@ -1,9 +1,9 @@
 from rich.table import Table
 from rich.console import Console
 from rich.syntax import Syntax
-from elf_visualizer.models import ElfFile, SectionInfo
+from elf_visualizer.models import InputFile, SectionInfo
 
-def render_section_table(elf_file: ElfFile, console: Console) -> None:
+def render_section_table(elf_file: InputFile, console: Console) -> None:
     """Renders the ELF sections in a formatted table."""
     table = Table(title=f"Sections for {elf_file.path}", show_header=True, header_style="bold cyan")
     

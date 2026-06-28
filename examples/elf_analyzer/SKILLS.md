@@ -13,7 +13,7 @@
 src/
 elf_visualizer/
     ├── __init__.py          # Package initialization (can remain empty)
-    ├── models.py            # Pydantic data structures (SectionInfo, ElfFile)
+    ├── models.py            # Pydantic data structures (SectionInfo, InputFile)
     ├── parser.py            # ELF parsing logic using pyelftools
     ├── visualizer.py        # Console rendering with rich tables and hex dumps
     ├── cli.py               # Argument parsing and entry point

@@ -36,7 +36,7 @@ examples/elf_analyzer/
 | Requirement | Implementation Details |
 |-------------|------------------------|
 | **ELF parsing** | Use `pyelftools` (pure‑Python). Parse `/path/to/elf`. Handle invalid files gracefully with a custom `ELFParseError`. |
-| **Data modelling** | Pydantic v2 models: <br> • `SectionInfo` – all header fields + optional lazy `content`. <br> • `ElfFile` – holds path and list of sections. |
+| **Data modelling** | Pydantic v2 models: <br> • `SectionInfo` – all header fields + optional lazy `content`. <br> • `InputFile` – holds path and list of sections. |
 | **CLI** | Accept positional `path` argument; `--dump` flag for hex‑view (only for ≤256 B to keep UI tidy). Use `argparse`; expose entry point via `console_scripts`. |
 | **Console output** | • Table: idx, Section Name, Type, VADDR (`hex()`), Size, Flags.<br>• Optional hex dump with 16‑byte rows using `rich.syntax` for colour‑blind safety. |
 | **Error handling** | Custom exceptions (`ELFParseError`, `ELFSectionError`) and descriptive messages printed via `rich.Console`. Never use bare `except:`. |
@@ -52,7 +52,7 @@ examples/elf_analyzer/
 ### Phase 1 – Foundation
 - [ ] Create `pyproject.toml` with Poetry/uv, lock files.
 - [ ] Scaffold `src/` and top‑level modules (`exceptions.py`, `models.py`).
-- [ ] Write **basic Pydantic models** (`SectionInfo`, `ElfFile`) with field validation.
+- [ ] Write **basic Pydantic models** (`SectionInfo`, `InputFile`) with field validation.
 - [ ] Add a simple CLI stub that prints help text.
 
 ### Phase 2 – ELF Parsing
@@ -60,7 +60,7 @@ examples/elf_analyzer/
 - [ ] Implement `parse_elf()` in `parser.py`:
   * Iterate over section headers.<br>
   * Populate `SectionInfo` fields (name, type, sh_addr, sh_size, sh_offset, flags).<br>
-  * Return an `ElfFile` instance.
+  * Return an `InputFile` instance.
 - [ ] Add custom exception `ELFParseError`.
 - [ ] Write unit tests covering valid ELF and error paths.
 
@@ -161,7 +161,7 @@ This section implements Future Enhancement #1 from the original plan, adding com
   * Add `SymbolInfo` model with fields: name, value, size, binding, visibility, section_index, is_local
   * Add `RelocationEntry` model with fields: offset, info, addend, symbol_index, section_type
   * Add `VersionDefinition` model with fields: version_name, hash, auxiliary_vector, timestamp
-  * Update `ElfFile` to include optional fields: `symbols`, `relocations`, `dynamic_entries`, `version_definitions`
+  * Update `InputFile` to include optional fields: `symbols`, `relocations`, `dynamic_entries`, `version_definitions`
 - [ ] Implement lazy loading patterns using `@property` decorators
 
 #### Phase 8.2 - Parser Enhancement
