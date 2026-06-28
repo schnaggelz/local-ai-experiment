@@ -190,6 +190,74 @@ Most values have sensible defaults, but `MODEL` is required.
 - The wrapper script enables optional flags only when the matching environment variable is set.
 - The container is configured for ROCm and may not work with non-ROCm images or GPUs without adjustment.
 
+## SYCL Ollama Server
+
+This variant builds a local Ollama image optimized for Intel GPUs using SYCL (oneAPI Level Zero). It provides enhanced GPU acceleration through the SYCL programming model, which can offer better performance on newer Intel hardware with unified memory management.
+
+### Files
+
+- `services/ollama-sycl/Dockerfile` - Ubuntu-based image with SYCL support and Ollama installed.
+- `services/ollama-sycl/docker-compose.yaml` - Compose service definition, GPU device passthrough for `/dev/dri`, and SYCL-specific runtime environment defaults.
+- `services/ollama-sycl/.env` - Optional per-service Compose overrides for port and Ollama runtime settings.
+
+### Requirements
+
+- Docker with Compose support.
+- A Intel GPU with `/dev/dri` access.
+
+### Quick Start
+
+1. Change into `services/ollama-sycl`.
+2. Optionally edit `.env` to override the exposed port or Ollama runtime defaults.
+3. Start the service with Compose.
+4. Pull or run models through the Ollama API or CLI once the container is up.
+
+Example:
+
+```bash
+cd services/ollama-sycl
+docker compose up -d
+docker compose exec ollama-sycl ollama pull llama3.2
+```
+
+The server listens on port `11434` by default.
+
+### Common Configuration
+
+The Compose file exposes these environment variables:
+
+- `OLLAMA_PORT`
+- `OLLAMA_HOST`
+- `OLLAMA_KEEP_ALIVE`
+- `OLLAMA_CONTEXT_LENGTH`
+- `OLLAMA_MAX_LOADED_MODELS`
+- `OLLAMA_MAX_QUEUE`
+- `OLLAMA_NUM_GPU`
+- `OLLAMA_GPU_OVERHEAD`
+- `OLLAMA_NUM_PARALLEL`
+- `OLLAMA_KV_CACHE_TYPE`
+- `OLLAMA_FLASH_ATTENTION`
+- `OLLAMA_DEBUG`
+
+SYCL-specific environment variables:
+
+- `ONEAPI_DEVICE_SELECTOR` - Controls Level Zero device selection
+- `ZES_ENABLE_SYSMAN` - Enables SysMan for system management
+- `SYCL_CACHE_PERSISTENT` - Persists SYCL cache across container restarts
+- `SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS` - Optimizes command list usage
+- `UR_L0_USE_IMMEDIATE_COMMANDLISTS` - Unified Runtime Level Zero optimization
+- `GGML_SYCL_DEBUG` - Enables SYCL debugging output
+- `GGML_SYCL_F16` - Uses FP16 precision for SYCL operations
+
+Defaults are defined in `docker-compose.yaml` and can be overridden in the service `.env` file or by exporting variables on the command line before running Compose.
+
+### Notes
+
+- The `./data` directory persists downloaded models across container restarts.
+- `OLLAMA_KEEP_ALIVE=10m` keeps a recently used model warm without pinning it indefinitely.
+- `OLLAMA_MAX_LOADED_MODELS=1` is the default for single-GPU systems where VRAM is the main constraint.
+- The service uses shared memory (`shm_size: 12gb`) and limits container memory to `20gb` to prevent out-of-memory crashes during heavy KV-cache pooling.
+
 ## PyTorch / ROCm ML Environment
 
 Scripts for setting up a ROCm-based PyTorch environment, checking the local GPU/ML stack, and exporting models to ONNX.
