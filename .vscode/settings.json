@@ -1,6 +1,5 @@
 {
-    "continue.enableTabAutocomplete": true,
-    "github.copilot.enable": {
-        "*": false
+    "github.copilot.advanced": {
+        "connectionTimeoutSeconds": 60
     }
 }

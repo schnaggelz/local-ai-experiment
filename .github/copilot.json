@@ -1,0 +1,10 @@
+{
+  "instructions": [
+    {
+      "file": ".github/instructions/python.instructions.md",
+      "applyTo": [
+        "examples/**"
+      ]
+    }
+  ]
+}
