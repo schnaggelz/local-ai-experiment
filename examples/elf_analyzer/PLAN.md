@@ -124,13 +124,167 @@ examples/elf_analyzer/
 ---
 
 ## 7. Future Enhancements
-1. Add `--json` output for integration with other tools.
-2. Support for program header (segment) visualization.
-3. Interactive mode with navigation over sections (TUI).
-4. Symbol table lookup and cross‑reference display.
-5. Disassembly of `.text` sections using `capstone`.
+1. **Enhanced metadata extraction** – Extract additional ELF metadata including symbol tables, relocation entries, dynamic section information, and version definitions for deeper analysis:
+   * Implement `SymbolInfo` model with name, value, size, binding, visibility, and section index.
+   * Add `RelocationEntry` model capturing offset, info, addend, and target symbol reference.
+   * Parse `.dynsym` and `.symtab` sections using pyelftools' SymbolTableSection.
+   * Extract dynamic section entries (`.dynsym`, `.dynstr`, `.hash`, `.gnu_version`, `.gnu_version_r`) for runtime linking analysis.
+   * Implement `VersionDefinition` model for version symbols in ELF64.
+   * Add lazy loading of symbol tables to maintain performance (load only when requested).
+2. Add `--json` output for integration with other tools.
+3. Support for program header (segment) visualization.
+4. Interactive mode with navigation over sections (TUI).
+5. Symbol table lookup and cross‑reference display.
+6. Disassembly of `.text` sections using `capstone`.
 
 ---
 
-**End of Plan.**
-This document can be kept in the repository as a living roadmap; each completed phase should update its status accordingly.
+## 8. Enhanced Metadata Extraction Implementation
+
+### Overview
+This section implements Future Enhancement #1 from the original plan, adding comprehensive ELF metadata extraction including symbol tables, relocation entries, dynamic sections, and version definitions while maintaining backward compatibility and performance through lazy loading.
+
+### Technical Requirements
+
+| Component | Details |
+|-----------|---------|
+| **Symbol Tables** | Parse `.symtab` (static symbols) and `.dynsym` (dynamic symbols) using pyelftools' SymbolTableSection. Extract name, value, size, binding, visibility, section index. Lazy loading - only parse when requested. |
+| **Relocation Entries** | Parse relocation sections (`.rel`, `.rela`, `.plt_rel`) for both static and dynamic relocations. Capture offset, info, addend, target symbol reference. Support ELF32/ELF64 variants. |
+| **Dynamic Sections** | Extract entries from `.dynsym` (symbol table), `.dynstr` (string table), `.hash` (hash table), `.gnu_version`, `.gnu_version_r` (version definitions). Parse runtime linking metadata. |
+| **Version Definitions** | Implement `VersionDefinition` model for ELF64 version symbols in `.gnu_version` and `.gnu_version_r`. Extract version names, hash, and symbol references. |
+| **CLI Integration** | Add new flags: `--symbols`, `--relocations`, `--dynamic` to selectively display enhanced metadata. Maintain existing `--dump` flag functionality. |
+
+### Implementation Phases
+
+#### Phase 8.1 - Data Model Extension
+- [ ] Extend `models.py`:
+  * Add `SymbolInfo` model with fields: name, value, size, binding, visibility, section_index, is_local
+  * Add `RelocationEntry` model with fields: offset, info, addend, symbol_index, section_type
+  * Add `VersionDefinition` model with fields: version_name, hash, auxiliary_vector, timestamp
+  * Update `ElfFile` to include optional fields: `symbols`, `relocations`, `dynamic_entries`, `version_definitions`
+- [ ] Implement lazy loading patterns using `@property` decorators
+
+#### Phase 8.2 - Parser Enhancement
+- [ ] Extend `parser.py`:
+  * Add `_parse_symbol_table()` method for `.symtab`/`.dynsym` sections
+  * Add `_parse_relocation_section()` method for relocation entries
+  * Add `_parse_dynamic_section()` method for dynamic linking metadata
+  * Add `_parse_version_definitions()` method for version symbols
+  * Implement lazy loading: only parse when corresponding CLI flags are used
+- [ ] Add new custom exceptions:
+  * `ELFSymbolError` - symbol table parsing errors
+  * `ELFRelocationError` - relocation entry parsing errors
+  * `ELFDynamicError` - dynamic section parsing errors
+
+#### Phase 8.3 - Visualizer Enhancement
+- [ ] Extend `visualizer.py`:
+  * Add `render_symbol_table()` method for displaying parsed symbols in formatted table
+  * Add `render_relocation_entries()` method for relocation information display
+  * Add `render_dynamic_sections()` method for dynamic linking metadata
+  * Add `render_version_definitions()` method for version symbol display
+- [ ] Implement intelligent formatting:
+  * Color-code symbol types (local/global/undefined)
+  * Show relocation target references with section names
+  * Display version definitions in hierarchical structure
+
+#### Phase 8.4 - CLI Integration
+- [ ] Update `cli.py`:
+  * Add new command-line arguments: `--symbols`, `--relocations`, `--dynamic`
+  * Implement argument validation and mutual exclusivity where appropriate
+  * Integrate enhanced metadata rendering based on flags
+  * Maintain backward compatibility with existing functionality
+- [ ] Update help text and documentation
+
+#### Phase 8.5 - Testing & Validation
+- [ ] Extend test suite:
+  * Add unit tests for symbol table parsing (valid ELF, edge cases)
+  * Add unit tests for relocation entry parsing (ELF32/ELF64 variants)
+  * Add integration tests for CLI with new flags
+  * Add snapshot tests for enhanced visualizer output
+- [ ] Create test fixtures:
+  * Use `/bin/ls` for symbol table testing
+  * Use the tool itself for relocation testing
+  * Include synthetic ELF files for comprehensive coverage
+
+### Code Quality Standards
+
+| Requirement | Implementation |
+|-------------|----------------|
+| **Type Hints** | Add complete type annotations for all new models and methods |
+| **Documentation** | Document every public function with Args, Returns, Raises |
+| **Error Handling** | Implement specific exception handling for each metadata type |
+| **Performance** | Ensure lazy loading prevents performance impact when not needed |
+| **Code Organization** | Keep functions ≤5 lines where possible; use helper functions |
+
+### Verification Steps
+
+1. **Symbol Table Testing**:
+   - Test with `/bin/ls` (contains static symbols)
+   - Verify symbol name, value, size extraction
+   - Test lazy loading behavior
+
+2. **Relocation Entry Testing**:
+   - Test with the tool itself (ELF binary with relocations)
+   - Verify offset, info, addend parsing for both ELF32/ELF64
+   - Test different relocation section types (`.rel`, `.rela`)
+
+3. **Dynamic Section Testing**:
+   - Parse dynamic linking metadata from known binaries
+   - Verify hash table and version definition extraction
+
+4. **CLI Integration Testing**:
+   - Test `--symbols` flag with various ELF files
+   - Test `--relocations` flag for relocation display
+   - Test `--dynamic` flag for dynamic section information
+   - Verify backward compatibility (existing CLI usage unchanged)
+
+5. **Performance Validation**:
+   - Measure parsing time without enhanced metadata
+   - Measure parsing time with lazy loading enabled
+   - Ensure no performance degradation in default mode
+
+### Risk Mitigation
+
+- **Parsing Failures**: Catch specific exceptions for each metadata type, provide clear error messages
+- **Memory Usage**: Implement streaming parsing for large symbol tables
+- **Compatibility**: Maintain existing API and CLI interface unchanged
+- **Testing Coverage**: Include real-world ELF binaries in test fixtures
+
+### Dependencies Update
+
+Update `pyproject.toml`:
+```toml
+dependencies = [
+    "pydantic ~=2.7",
+    "rich >=13.0", 
+    "pyelftools >=0.30",
+]
+dev-dependencies = [
+    "pytest",
+    "pytest-cov",
+    # Additional testing tools as needed
+]
+```
+
+### Milestones (Updated)
+
+| Milestone | Expected Outcome |
+|-----------|-----------------|
+| **M1 – Setup** | Complete project scaffolding, lock file generated, basic CLI runs and prints help. |
+| **M2 – Parser Core** | `parse_elf()` correctly extracts all sections for a known ELF; unit tests pass. |
+| **M3 – Visualizer** | Console table displays section metadata; `--dump` flag produces readable hex dumps (size‑limited). |
+| **M4 – CLI & Errors** | Full CLI functionality, graceful error messages, registered entry point `elf_visualizer`. |
+| **M5 – Tests & CI** | All tests pass (> 80 % coverage), test suite can be run with a single command (`pytest`). |
+| **M6 – Docs** | Polished `README.md` with usage examples and developer notes; code documentation complete. |
+| **M7 – Enhanced Metadata** | Symbol table, relocation entry, and dynamic section parsing implemented; new CLI flags functional; comprehensive test coverage for enhanced features. |
+
+### Future Considerations
+
+1. **JSON Output**: Implement `--json` flag to emit parsed data (including enhanced metadata) as structured JSON
+2. **Disassembly Integration**: Plan for capstone integration to disassemble `.text` sections using symbol information
+3. **Interactive Features**: Foundation laid for TUI navigation over sections and symbols
+4. **Cross-references**: Enable symbol table lookup and cross-reference display
+
+---
+
+**End of Enhanced Metadata Extraction Implementation Plan.**
