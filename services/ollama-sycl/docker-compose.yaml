@@ -36,6 +36,12 @@ services:
       # Persist downloaded Ollama models across container restarts
       - ./data:/root/.ollama
       - sycl_cache:/root/.cache
+    # Prevents out-of-memory container crashes during multi-tenant / heavy KV-cache pooling
+    shm_size: 12gb
+    deploy:
+      resources:
+        limits:
+          memory: 20gb
     # Start the Ollama server directly on container boot
     command: ollama serve
 volumes:
