@@ -5,7 +5,7 @@ schema: v1
 models:
   - name: North Mini Code 1.0 (99)
     provider: ollama
-    model: north-mini-code-1.0:latest
+    model: north-mini-code-1.0-longctx:latest
     contextLength: 262144
     template: command-r
     roles:
@@ -16,21 +16,9 @@ models:
     capabilities:
       - tool_use
     apiBase: http://192.168.242.99:11434
-  - name: Gemma4 31B (99)
-    provider: ollama
-    model: gemma4:31b
-    contextLength: 65536
-    roles:
-      - chat
-      - edit
-      - apply
-      - summarize
-    capabilities:
-      - tool_use
-    apiBase: http://192.168.242.99:11434
   - name: Gemma4 26B (99)
     provider: ollama
-    model: gemma4:26b
+    model: gemma4-longctx:latest
     contextLength: 262144
     roles:
       - chat
