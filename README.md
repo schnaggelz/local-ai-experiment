@@ -11,7 +11,7 @@ See [hailo/speech_recognition/README.md](hailo/speech_recognition/README.md) for
 
 ## Nvidia Jetson AGX Ollama Server
 
-See [README](docker/services/jetson-sdk/README.md) for setting up the AGX.
+See [README](services/jetson-sdk/README.md) for setting up the AGX.
 
 ### Run Ollama Server
 
@@ -84,9 +84,9 @@ This variant builds a local Ollama image on top of Ubuntu 24.04, installs ROCm i
 
 ### Files
 
-- `docker/services/ollama-rocm/Dockerfile` - Ubuntu-based image with ROCm and Ollama installed.
-- `docker/services/ollama-rocm/docker-compose.yml` - Compose service definition, GPU device passthrough, and runtime environment defaults.
-- `docker/services/ollama-rocm/.env` - Optional per-service Compose overrides for port and Ollama runtime settings.
+- `services/ollama-rocm/Dockerfile` - Ubuntu-based image with ROCm and Ollama installed.
+- `services/ollama-rocm/docker-compose.yml` - Compose service definition, GPU device passthrough, and runtime environment defaults.
+- `services/ollama-rocm/.env` - Optional per-service Compose overrides for port and Ollama runtime settings.
 
 ### Requirements
 
@@ -95,7 +95,7 @@ This variant builds a local Ollama image on top of Ubuntu 24.04, installs ROCm i
 
 ### Quick Start
 
-1. Change into `docker/services/ollama-rocm`.
+1. Change into `services/ollama-rocm`.
 2. Optionally edit `.env` to override the exposed port or Ollama runtime defaults.
 3. Start the service with Compose.
 4. Pull or run models through the Ollama API or CLI once the container is up.
@@ -103,9 +103,9 @@ This variant builds a local Ollama image on top of Ubuntu 24.04, installs ROCm i
 Example:
 
 ```bash
-cd docker/services/ollama-rocm
+cd services/ollama-rocm
 docker compose up -d
-docker compose exec rocm-ollama ollama pull llama3.2
+docker compose exec ollama-rocm ollama pull llama3.2
 ```
 
 The server listens on port `11434` by default.
@@ -116,17 +116,23 @@ The Compose file exposes these environment variables:
 
 - `OLLAMA_PORT`
 - `OLLAMA_HOST`
-- `OLLAMA_CONTEXT_LENGTH`
 - `OLLAMA_KEEP_ALIVE`
+- `OLLAMA_CONTEXT_LENGTH`
 - `OLLAMA_MAX_LOADED_MODELS`
+- `OLLAMA_MAX_QUEUE`
+- `OLLAMA_NUM_GPU`
+- `OLLAMA_GPU_OVERHEAD`
 - `OLLAMA_NUM_PARALLEL`
+- `OLLAMA_KV_CACHE_TYPE`
+- `OLLAMA_FLASH_ATTENTION`
+- `OLLAMA_DEBUG`
 
 Defaults are defined in `docker-compose.yml` and can be overridden in the service `.env` file or by exporting variables on the command line before running Compose.
 
 ### Notes
 
-- The named volume `ollama_data` persists downloaded models across container restarts.
-- `OLLAMA_KEEP_ALIVE=5m` keeps a recently used model warm without pinning it indefinitely.
+- The `./data` directory persists downloaded models across container restarts.
+- `OLLAMA_KEEP_ALIVE=10m` keeps a recently used model warm without pinning it indefinitely.
 - `OLLAMA_MAX_LOADED_MODELS=1` is a safer default for a single local ROCm GPU where VRAM is the main constraint.
 - If you run Compose from outside `docker/services/ollama-rocm`, use `docker compose --env-file docker/services/ollama-rocm/.env -f docker/services/ollama-rocm/docker-compose.yml up -d` so the service-specific overrides are used consistently.
 
@@ -136,10 +142,10 @@ The main setup in this repo is a `llama.cpp` server container built for ROCm GPU
 
 ### Files
 
-- `docker/services/llama-cpp-rocm/Dockerfile` - Local ROCm build for `llama-server`.
-- `docker/services/llama-cpp-rocm/docker-compose.yml` - Compose service definition, GPU device passthrough, build settings, and default runtime settings.
-- `docker/services/llama-cpp-rocm/run-llama-server.sh` - Entrypoint script that converts environment variables into `llama-server` CLI flags.
-- `docker/services/ollama-rocm/.env` - Optional per-service Compose overrides for port and llama.cpp runtime settings.
+- `services/llama-cpp-rocm/Dockerfile` - Local ROCm build for `llama-server`.
+- `services/llama-cpp-rocm/docker-compose.yml` - Compose service definition, GPU device passthrough, build settings, and default runtime settings.
+- `services/llama-cpp-rocm/run-llama-server.sh` - Entrypoint script that converts environment variables into `llama-server` CLI flags.
+- `services/ollama-rocm/.env` - Optional per-service Compose overrides for port and llama.cpp runtime settings.
 
 ### Requirements
 
@@ -153,7 +159,7 @@ The main setup in this repo is a `llama.cpp` server container built for ROCm GPU
 2. Set `MODEL` to the path of the model inside `/models`.
 3. Optionally set `LLAMA_CPP_REF` if you want to pin a llama.cpp branch, tag, or commit-ish.
 4. Optionally set `ROCM_DOCKER_ARCH` to control which AMD GPU architectures are compiled into the image.
-5. Start the service from `docker/services/llama-cpp-rocm`.
+5. Start the service from `services/llama-cpp-rocm`.
 
 Example:
 
