@@ -1,0 +1,58 @@
+{
+  "providers": {
+    "ollama_jetson_agx": {
+      "baseUrl": "http://192.168.242.55:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "models": [
+        {
+          "id": "gemma4:26b",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 32768,
+          "reasoning": true
+        },
+        {
+          "id": "gemma4:e4b",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 32768,
+          "reasoning": true
+        },
+        {
+          "id": "qwen3-coder:30b",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 32768,
+          "reasoning": true
+        }
+      ]
+    },
+    "ollama_localhost": {
+      "baseUrl": "http://localhost:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "models": [
+        {
+          "id": "gemma4:e2b",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 65536,
+          "reasoning": true
+        },
+        {
+          "id": "qwen2.5-coder:3b",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 32768,
+          "reasoning": false
+        }
+      ]
+    }
+  }
+}
