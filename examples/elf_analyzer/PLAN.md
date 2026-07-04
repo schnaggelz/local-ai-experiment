@@ -277,6 +277,7 @@ dev-dependencies = [
 | **M5 – Tests & CI** | All tests pass (> 80 % coverage), test suite can be run with a single command (`pytest`). |
 | **M6 – Docs** | Polished `README.md` with usage examples and developer notes; code documentation complete. |
 | **M7 – Enhanced Metadata** | Symbol table, relocation entry, and dynamic section parsing implemented; new CLI flags functional; comprehensive test coverage for enhanced features. |
+| **M8 – Automated Testing** | C++ generator integrated; end-to-end testing of all ELF features automated via generated binaries. |
 
 ### Future Considerations
 
