@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from rich.console import Console
 
 from elf_visualizer.parser import parse_elf, _parse_symbol_table, _parse_relocation_section, _parse_dynamic_section, _parse_version_definitions
+from elftools.elf.elffile import ELFFile
 from elf_visualizer.visualizer import render_section_table, render_section_content, render_symbol_table, render_relocation_entries, render_dynamic_sections, render_version_definitions
 from elf_visualizer.exceptions import ELFParseError
 
@@ -57,40 +58,29 @@ def main() -> None:
                 render_section_content(section, console)
 
         # 4. Enhanced metadata extraction based on flags
-        if args.symbols:
-            symbols = _parse_symbol_table(elf_file)
-            render_symbol_table(symbols, console)
+        if args.symbols or args.relocations or args.dynamic:
+            # Re-open the file to parse enhanced metadata
+            with open(args.path, 'rb') as f:
+                elf = ELFFile(f)
+                
+                if args.symbols:
+                    symbols = _parse_symbol_table(elf)
+                    render_symbol_table(symbols, console)
 
-        if args.relocations:
-            relocations = []
-            for section in elf_file.sections:
-                relocations.extend(_parse_relocation_section(section))
-            # Parse symbols for reference resolution
-            symbols = _parse_symbol_table(elf_file) if not args.symbols else None
-            render_relocation_entries(relocations, symbols, console)
+                if args.relocations:
+                    relocations = []
+                    for section in elf.iter_sections():
+                        relocations.extend(_parse_relocation_section(section))
+                    # Parse symbols for reference resolution
+                    symbols = _parse_symbol_table(elf) if not args.symbols else None
+                    render_relocation_entries(relocations, console, symbols)
 
-        if args.dynamic:
-            dynamic_data = {}
-            for section in elf_file.sections:
-                if section['type'] == 'SHT_DYNAMIC':
-                    # Parse dynamic section using the enhanced parser
-                    with open(args.path, 'rb') as f:
-                        from elftools.elf.elffile import ELFFile
-                        elf = ELFFile(f)
-                        for s in elf.iter_sections():
-                            if s['sh_type'] == 'SHT_DYNAMIC':
-                                entries = []
-                                for dyn in s.iter_dicts():
-                                    entries.append({
-                                        'tag': dyn.d_tag,
-                                        'value': dyn.d_val
-                                    })
-                                dynamic_data[s.name] = entries
-            render_dynamic_sections(dynamic_data, console)
+                if args.dynamic:
+                    dynamic_data = _parse_dynamic_section(elf)
+                    render_dynamic_sections(dynamic_data, console)
 
-        if args.version_definitions:
-            versions = _parse_version_definitions(elf_file)
-            render_version_definitions(versions, console)
+        # Note: Version definitions parsing requires additional pyelftools functionality
+        # and is included in the enhanced parser but not exposed via CLI flags yet
 
     except ELFParseError as e:
         console.print(f"[bold red]Parsing Error:[/bold red] {e}")
