@@ -41,6 +41,11 @@ def main() -> None:
         action="store_true",
         help="Extract and display dynamic section information"
     )
+    parser.add_argument(
+        "--versions",
+        action="store_true",
+        help="Extract and display version definitions"
+    )
 
     args = parser.parse_args()
     console = Console()
@@ -58,7 +63,7 @@ def main() -> None:
                 render_section_content(section, console)
 
         # 4. Enhanced metadata extraction based on flags
-        if args.symbols or args.relocations or args.dynamic:
+        if args.symbols or args.relocations or args.dynamic or args.versions:
             # Re-open the file to parse enhanced metadata
             with open(args.path, 'rb') as f:
                 elf = ELFFile(f)
@@ -79,8 +84,9 @@ def main() -> None:
                     dynamic_data = _parse_dynamic_section(elf)
                     render_dynamic_sections(dynamic_data, console)
 
-        # Note: Version definitions parsing requires additional pyelftools functionality
-        # and is included in the enhanced parser but not exposed via CLI flags yet
+                if args.versions:
+                    versions = _parse_version_definitions(elf)
+                    render_version_definitions(versions, console)
 
     except ELFParseError as e:
         console.print(f"[bold red]Parsing Error:[/bold red] {e}")

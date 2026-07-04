@@ -1,3 +1,4 @@
+from typing import Optional, Any
 from rich.table import Table
 from rich.console import Console
 from rich.syntax import Syntax
@@ -172,13 +173,16 @@ def render_version_definitions(versions: list[VersionDefinition], console: Conso
     table.add_column("Idx", justify="right", style="dim")
     table.add_column("Version Name", style="green")
     table.add_column("Hash", justify="right")
+    table.add_column("Aux Vector", style="cyan")
     table.add_column("Timestamp", justify="right")
 
     for idx, version in enumerate(versions):
+        aux_str = ", ".join(map(str, version.auxiliary_vector)) if version.auxiliary_vector else "-"
         table.add_row(
             str(idx),
             version.version_name,
             f"0x{version.hash_value:x}",
+            aux_str,
             str(version.timestamp)
         )
 

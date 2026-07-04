@@ -33,6 +33,36 @@ def test_render_version_definitions_empty():
         # Should print "No version definitions found" message
         assert any("No version definitions found" in str(call) for call in mock_print.call_args_list)
 
+def test_render_version_definitions_with_data():
+    """Test version definitions rendering with data."""
+    import io
+    console = Console(file=io.StringIO(), force_terminal=True)
+    versions = [
+        VersionDefinition(
+            version_name="GLIBC_2.34",
+            hash_value=0x12345678,
+            auxiliary_vector=[1, 2],
+            timestamp=1600000000
+        ),
+        VersionDefinition(
+            version_name="GLIBC_2.35",
+            hash_value=0x87654321,
+            auxiliary_vector=[],
+            timestamp=1700000000
+        )
+    ]
+    
+    render_version_definitions(versions, console)
+    
+    output = console.file.getvalue()
+    assert "GLIBC_2.34" in output
+    assert "0x12345678" in output
+    assert "1, 2" in output
+    assert "GLIBC_2.35" in output
+    assert "0x87654321" in output
+    assert "-" in output  # for the empty aux vector
+
+
 def test_symbol_info_creation():
     """Test SymbolInfo model creation."""
     symbol = SymbolInfo(
