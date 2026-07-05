@@ -1,0 +1,60 @@
+/* Main Layout */
+#main-layout {
+    layout: horizontal;
+    height: 100%;
+    width: 100%;
+}
+
+/* Sidebar Styling */
+#sidebar {
+    width: 24;
+    background: $boost;
+    padding: 1;
+    border-right: thick green;
+    dock: left;
+}
+
+.sidebar-item {
+    color: $text;
+    margin: 0;
+    padding: 0 1;
+}
+
+.sidebar-item:hover {
+    background: $accent;
+    color: $text;
+}
+
+/* Content Area */
+#content-area {
+    width: 1fr;
+    height: 1fr;
+    padding: 1;
+}
+
+#file-title {
+    color: $primary-lighten-2;
+    text-align: center;
+    margin-bottom: 1;
+    style: bold italic;
+}
+
+/* Panels */
+#view-panels {
+    height: 1fr;
+    width: 1fr;
+}
+
+/* DataTable Customization */
+DataTable {
+    highlight-match: true;
+}
+
+DataTable .cursor-cell {
+    background: $accent;
+    color: $text;
+}
+
+DataCell {
+    padding: 0 1;
+}

@@ -11,6 +11,7 @@ dependencies = [
     "pydantic>=2.7.0",
     "rich>=13.0.0",
     "pyelftools>=0.30.0",
+    "textual>=2.0.0",
 ]
 
 [project.scripts]

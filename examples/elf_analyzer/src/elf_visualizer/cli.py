@@ -46,8 +46,20 @@ def main() -> None:
         action="store_true",
         help="Extract and display version definitions"
     )
+    parser.add_argument(
+        "--tui",
+        action="store_true",
+        help="Launch the interactive Textual TUI mode"
+    )
 
     args = parser.parse_args()
+
+    # Fast-path for interactive TUI mode
+    if args.tui:
+        from elf_visualizer.tui.app import run_tui
+        run_tui(args.path)
+        return
+
     console = Console()
 
     try:
