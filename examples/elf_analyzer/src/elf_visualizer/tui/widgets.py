@@ -32,8 +32,9 @@ class IconSidebar(Static):
     def compose(self) -> ComposeResult:
         for title, action_id in self.items.items():
             is_selected = action_id == self.selected_key
+            markup_title = f"[{title!r}]" if not is_selected else f"[bold]{title}[/]"
             yield Label(
-                f"[{'bold' if is_selected else ''}]{title}[/]",
+                markup_title,
                 id=f"nav-{action_id}",
                 classes="sidebar-item",
             )
