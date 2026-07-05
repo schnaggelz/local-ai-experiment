@@ -4,7 +4,7 @@ A command-line tool for inspecting and visualizing ELF (Executable and Linkable 
 
 ## Overview
 
-The ELF Visualizer is a Python-based CLI application that parses ELF files and presents their section information in an easy-to-read format. It uses `pyelftools` for parsing, `rich` for beautiful console output, and `pydantic` for data validation.
+The ELF Visualizer is a Python-based CLI application that parses ELF files and presents their section information in an easy-to-read format. It uses `pyelftools` for parsing, `rich` for beautiful console output, and `pydantic v2` for data validation. It features an interactive TUI mode powered by `textual` for deep, navigable inspection of complex binaries.
 
 ## Installation
 
@@ -23,30 +23,64 @@ cd /path/to/elf-analyzer/examples/elf_analyzer
 pip install -e .
 ```
 
-## Basic Usage
+## Usage
 
-### Simple Inspection
+The ELF Visualizer operates in two modes: **Batch Mode** (standard CLI output) and **Interactive TUI Mode** (reactive terminal UI).
+
+### 1. Interactive TUI Mode (Recommended)
+Launch a fully interactive, navigable interface using the `--tui` flag. Built with `textual`, it allows live search, table sorting, and view switching without restarting the tool.
+
+```bash
+elf_visualizer /path/to/binary.elf --tui
+```
+
+**Key Bindings:**
+| Key | Action |
+|-----|--------|
+| `q` | Quit application |
+| `d` | Toggle Dark/Light mode |
+| `1`/`2`/`3`/`4` | Switch between Sections, Symbols, Relocations, and Dynamic Info views |
+| `↑`/`↓` | Navigate within tables (Sections/Symbols) |
+| Double-click | Inspect raw hex data for a specific section |
+
+### 2. Batch Mode (Standard Output)
+For script integration or quick lookups, run without flags or use the enhanced metadata arguments.
+
 ```bash
 # Display section table for an ELF binary
 elf_visualizer /path/to/binary.elf
-```
-
-### With Hex Dump
-```bash
-# Show hex dump for small sections (≤256 bytes)
-elf_visualizer /path/to/binary.elf --dump
 ```
 
 ## Command Line Arguments
 
 | Argument | Description |
 |----------|-------------|
-| `path` | Path to the ELF binary file to analyze |
-| `--dump` | Display hex dump for small sections (≤256 bytes) |
+| `path` | Path to the ELF binary file to analyze (required) |
+| `--tui` | Launch the interactive Textual TUI interface |
+| `--dump` | Display hex dump for small sections (≤256 bytes) in batch mode |
+| `--symbols` | Parse and display `.symtab` / `.dynsym` tables |
+| `--relocations` | Extract and list static/dynamic relocation entries |
+| `--dynamic` | Show dynamic linker tags and dependencies (`.dynamic`) |
+| `--versions` | Display version definitions (`.gnu.version_r`) |
 
-## Example Output
+## Example TUI Interface
 
-### Basic Table View
+```shell
+ $ elf_visualizer /sys/bin/ls --tui ╭──── Header: ls ────────────╮
+┏━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━┓ ┃  🔍 Search...              │
+┣━━━━━━━━━╇━━━━━━━━━━━━━━━╇───────┫ ┃                            │
+┃ Sections┃ .text         ┃ ...   ┃ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+┃ Symbols ┃ .data         ┃ ...   ┃ 
+┃ Relocs  ┃ .bss          ┃ ...   ┃   ┌────────── Section Info ──────┐
+┃ Dynamic ┃ .rodata       ┃ ...   ┃   │ Name: .text                  │
+┗━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━─┛   │ Type: SHT_PROGBITS [AX]      │
+                                      └──────────────────────────────┘
+╰── Footer: 1 Sections | q Quit ─────────────────────────────────────╯
+```
+
+## Example Batch Output
+
+### Basic Table View (Batch Mode)
 ```
 ┌─────────────┬──────────────────┬──────────────┬─────────────┬────────┬─────────────┐
 │ Index       │ Section Name     │ Type         │ VADDR       │ Size   │ Flags       │
@@ -58,21 +92,20 @@ elf_visualizer /path/to/binary.elf --dump
 ```
 
 ### With Hex Dump (for small sections)
-```
-Section: .text (SHT_PROGBITS)
-VADDR: 0x400000, Size: 0x1000 bytes
-Hex dump:
+```section: .text (SHT_PROGBITS)
+vaddr: 0x400000, Size: 0x1000 bytes
+hex dump:
 00400000: 48 65 6c 6c 6f 20 57 6f 72 6c 64 21 90 90 90 90  Hello World!....
 00400010: 48 65 6c 6c 6f 20 57 6f 72 6c 64 21 90 90 90 90  Hello World!....
 ```
 
 ## Features
 
-- **Robust Parsing**: Uses `pyelftools` to handle various ELF formats and architectures
-- **Beautiful Output**: Rich console tables with color support
-- **Error Handling**: Graceful error messages for invalid files or parsing issues
-- **Type Safety**: Pydantic models ensure data integrity
-- **Extensible**: Easy to add new visualization features
+- **Interactive TUI Mode**: Native terminal UI powered by `textual` for intuitive navigation, searching, and live inspection of ELF structures.
+- **Deep Metadata Extraction**: Analyze symbol tables (`.symtab`, `.dynsym`), relocations (`.rela`, `.rel`), dynamic tags (`.dynamic`), and version definitions (`.gnu.version_r`).
+- **Robust Parsing**: Uses `pyelftools` to gracefully handle various ELF formats, architectures, and malformed binaries.
+- **Beautiful Output**: Rich console tables with color-coded metadata for easy skimming.
+- **Type Safety & Performance**: Pydantic v2 models ensure data integrity; heavy sections are lazily loaded until viewed.
 
 ## Development Setup
 
@@ -85,7 +118,8 @@ cd elf-analyzer/examples/elf_analyzer
 ### Install in Development Mode
 ```bash
 pip install -e .
-```\n
+```
+
 ### Running Tests
 ```bash
 pytest
