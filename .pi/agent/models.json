@@ -31,6 +31,52 @@
         }
       ]
     },
+    "ollama_dt1": {
+      "baseUrl": "http://192.168.242.99:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "models": [
+        {
+          "id": "gemma4-26b-longctx:latest",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 262144,
+          "reasoning": true
+        },
+        {
+          "id": "north-mini-code-1.0-longctx:latest",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 262144,
+          "reasoning": true
+        },
+        {
+          "id": "qwen3.6-27b-longctx:latest",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 131072,
+          "reasoning": true
+        }
+      ]
+    },
+    "ollama_dt2": {
+      "baseUrl": "http://192.168.242.97:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "models": [
+        {
+          "id": "gemma4:e4b",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 32768,
+          "reasoning": true
+        }
+      ]
+    },
     "ollama_localhost": {
       "baseUrl": "http://localhost:11434/v1",
       "api": "openai-completions",
