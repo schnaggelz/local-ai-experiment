@@ -95,18 +95,16 @@ class SectionTable(DataTable[str]):
                 f"0x{sec.address:x}",
                 f"{sec.size} B",
                 sec.flags,
-                key=sec.name,
+                key=f"sec-{idx}", # Using unique index-based ID to avoid duplicate name crashes
             )
 
-    def on_data_table_column_resize(self, event: DataTable.ColumnResize) -> None:
-        pass  # allow native resize
-
-    def on_double_click(self, event: DataTable.CellClicked) -> None:
-        """Dispatch selection event for hex dump loading."""
+    # DataTable events may differ across versions; we use row_highlighted for reliable interaction.
+    def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        """Handle section selection."""
         try:
-            sec = self.sections[int(event.cell.row)]
+            sec = self.sections[event.cursor_row.index]
             self.post_message(self.Selected(sec))
-        except (IndexError, ValueError):
+        except (IndexError, AttributeError):
             pass
 
 
@@ -140,7 +138,7 @@ class SymbolTable(DataTable[str]):
                 f"{sym.size} B",
                 sym.binding,
                 sym.visibility,
-                key=sym.name,
+                key=f"sym-{idx}", # Using unique index-based ID to avoid duplicate name crashes
             )
 
 

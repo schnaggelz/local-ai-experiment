@@ -27,36 +27,49 @@ class ElfTuiApp(App):
         super().__init__()
         self.elf_path = elf_path
         self.elf_data = None
+        self.main_screen: MainScreen | None = None
 
     def on_mount(self) -> None:
         """Parse the ELF file when the app mounts."""
         try:
-            self.elf_data = parse_elf(self.elf_path)
+            base_data = parse_elf(self.elf_path)
+
             # Pre-load enhanced metadata for TUI responsiveness
             from elf_visualizer.parser import (
                 _parse_symbol_table,
-                _parse_relocation_section,
-                _parse_dynamic_section,
+                _parse_relocation_section,_parse_dynamic_section,
                 _parse_version_definitions,
             )
             from elftools.elf.elffile import ELFFile
 
+            symbols = base_data.symbols or []
+            relocs_raw = base_data.relocations or []
+            dyn_raw = base_data.dynamic_entries
+            vers_raw = base_data.version_definitions
+
             with open(self.elf_path, "rb") as f:
                 elf = ELFFile(f)
-                self.elf_data.symbols = _parse_symbol_table(elf) or []
-                
+                symbols = _parse_symbol_table(elf) or symbol
+
                 relocs = []
                 for sec in elf.iter_sections():
                     relocs.extend(_parse_relocation_section(sec))
-                self.elf_data.relocations = relocs if relocs else None
+                relocs_raw = relocs if relocs else None
 
-                dyn = _parse_dynamic_section(elf)
-                self.elf_data.dynamic_entries = dyn or None
+                dyn_raw = _parse_dynamic_section(elf) or dyn_raw
+                vers_raw = _parse_version_definitions(elf) or vers_raw
 
-                vers = _parse_version_definitions(elf)
-                self.elf_data.version_definitions = vers or None
+            # InputFile is frozen; create an updated copy.
+            self.elf_data = base_data.model_copy(update={
+                "symbols": symbols,
+                "relocations": relocs_raw,
+                "dynamic_entries": dyn_raw,
+                "version_definitions": vers_raw,
+            })
 
-            self.push_screen(MainScreen(self.elf_data))
+            # Store reference to the main screen so we can programmatically switch views without stack issues.
+            self.main_screen = MainScreen(self.elf_data)
+            self.push_screen(self.main_screen)
         except ELFParseError as err:
             self.notify(f"Failed to parse ELF: {err}", severity="error")
             self.exit()
@@ -73,14 +86,26 @@ class ElfTuiApp(App):
     def action_toggle_dark(self) -> None:
         self.dark = not self.dark
 
+    def action_focus_search(self) -> None:
+        if self.main_screen:
+            self.main_screen.action_switch("/", **{}) # Fallback for custom search bar in future
+
+    def _switch_view(self, view_id: str) -> None:
+        """Helper to update the currently mounted screen's view state directly."""
+        if self.main_screen:
+            # If it's a URL-style param for other screens, we just parse the key out.
+            clean_key = view_id.split("?")[0]
+            self.notify(f"Switched to {clean_key.replace('_', ' ').title()} View")
+            self.main_screen.action_switch(clean_key)
+
     def action_screen_sections(self) -> None:
-        self.push_screen("main")
+        self._switch_view("sections")
 
     def action_screen_symbols(self) -> None:
-        self.push_screen("main?view=symbols")
+        self._switch_view("symbols")
 
     def action_screen_relocations(self) -> None:
-        self.push_screen("main?view=relocs")
+        self._switch_view("relocs")
 
 
 def run_tui(elf_path: str) -> None:
