@@ -8,5 +8,6 @@
 **/*.bin
 **/*_bin
 .pytest*
+.coverage*
 **/build
 **/*.egg-info

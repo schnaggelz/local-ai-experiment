@@ -28,7 +28,7 @@ pip install -e .
 The ELF Visualizer operates in two modes: **Batch Mode** (standard CLI output) and **Interactive TUI Mode** (reactive terminal UI).
 
 ### 1. Interactive TUI Mode (Recommended)
-Launch a fully interactive, navigable interface using the `--tui` flag. Built with `textual`, it allows live search, table sorting, and view switching without restarting the tool.
+Launch a fully interactive, navigable interface using the `--tui` flag. Built with `textual`, it allows view switching and rich table navigation without restarting the tool.
 
 ```bash
 elf_visualizer /path/to/binary.elf --tui
@@ -67,15 +67,14 @@ elf_visualizer /path/to/binary.elf
 
 ```shell
  $ elf_visualizer /sys/bin/ls --tui ╭──── Header: ls ────────────╮
-┏━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━┓ ┃  🔍 Search...              │
-┣━━━━━━━━━╇━━━━━━━━━━━━━━━╇───────┫ ┃                            │
-┃ Sections┃ .text         ┃ ...   ┃ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-┃ Symbols ┃ .data         ┃ ...   ┃ 
-┃ Relocs  ┃ .bss          ┃ ...   ┃   ┌────────── Section Info ──────┐
-┃ Dynamic ┃ .rodata       ┃ ...   ┃   │ Name: .text                  │
-┗━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━─┛   │ Type: SHT_PROGBITS [AX]      │
-                                      └──────────────────────────────┘
-╰── Footer: 1 Sections | q Quit ─────────────────────────────────────╯
+┏━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━┓
+┣━━━━━━━━━╇━━━━━━━━━━━━━━━┳━━━━━━━┫
+┃ Sections┃ .text         ┃ ...   ┃
+┃ Symbols ┃ .data         ┃ ...   ┃
+┃ Relocs  ┃ .bss          ┃ ...   ┃
+┃ Dynamic ┃ .rodata       ┃ ...   ┃
+┗━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━┛
+╰── Footer: q Quit | d Dark Mode ──────────╯
 ```
 
 ## Example Batch Output
@@ -101,7 +100,7 @@ hex dump:
 
 ## Features
 
-- **Interactive TUI Mode**: Native terminal UI powered by `textual` for intuitive navigation, searching, and live inspection of ELF structures.
+- **Interactive TUI Mode**: Native terminal UI powered by `textual` for intuitive navigation and live inspection of ELF structures.
 - **Deep Metadata Extraction**: Analyze symbol tables (`.symtab`, `.dynsym`), relocations (`.rela`, `.rel`), dynamic tags (`.dynamic`), and version definitions (`.gnu.version_r`).
 - **Robust Parsing**: Uses `pyelftools` to gracefully handle various ELF formats, architectures, and malformed binaries.
 - **Beautiful Output**: Rich console tables with color-coded metadata for easy skimming.

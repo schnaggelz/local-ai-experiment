@@ -44,7 +44,7 @@ examples/elf_analyzer/
 | **Dependencies** | `Pydantic ~=2.7`, `rich >=13.0`, `pyelftools >=0.30`. All listed in `pyproject.toml` with appropriate dev‑deps (`pytest`, `pytest‑cov`). |
 | **Code quality** | • Type hints throughout (`from __future__ import annotations`).<br>• Functions ≤ 5 lines where possible; helpers for complex logic.<br>• Every public function documented with `Args`, `Returns`, and `Raises`. |
 | **Efficiency** | Lazy loading of section content (read only when `--dump` used or requested). Use sets / dicts to deduplicate sections if needed. |
-| **Interactive TUI** | Use `textual` framework for a reactive terminal UI. Implement navigation screens: Sections, Symbols, Relocations, Hex Viewer. Support keyboard shortcuts, search filtering, and quick-jump by virtual address. |
+| **Interactive TUI** | Use `textual` framework for a reactive terminal UI. Implement navigation screens: Sections, Symbols, Relocations, Hex Viewer. Support keyboard shortcuts. |
 
 ---
 
@@ -203,14 +203,18 @@ This section implements Future Enhancement #1 from the original plan, adding com
   * Navigation sidebar or tabbed interface for Sections, Symbols, Dynamic Info, Versions.
   * `HexViewerWidget`: byte-wise rendering, cross-referencing symbols on hover. 
 - [ ] Keyboard shortcuts & commands: 
-  * Global keys (`q` quit, `/` search/filter, `g` jump to VADDR).
+  * Global keys (`q` quit).
+  * Section context: toggle raw hex dump, scroll-through large sections.
   * Section context: toggle raw hex dump, scroll-through large sections.
 - [ ] Integrate parser lazy-loading so that heavy metadata (e.g., full `.symtab`) is only populated upon TUI navigation to that specific view.
 - [ ] Add styling/theme support (light/dark terminal themes).
 
 ### Phase 9.1 – Testing & Validation for TUI
 - [ ] Mock-based unit tests for widget behavior and key bindings.
-- [ ] End-to-end TUI integration test using `pytest-textual` to simulate user input paths (e.g., load binary, switch to symbols, search "main", jump to address).
+- [ ] End-to-end TUI integration test using `pytest-textual` to simulate user input paths (e.g., load binary, switch views, navigate tables).
+- [ ] Ensure no memory leaks with large binaries (>50MB ELF files with massive symbol tables).
+
+### Future Considerations
 - [ ] Ensure no memory leaks with large binaries (>50MB ELF files with massive symbol tables).
 
 ### Phase 8.5 - Testing & Validation
@@ -296,7 +300,7 @@ dev-dependencies = [
 | **M6 – Docs** | Polished `README.md` with usage examples and developer notes; code documentation complete. |
 | **M7 – Enhanced Metadata** | Symbol table, relocation entry, and dynamic section parsing implemented; new CLI flags functional; comprehensive test coverage for enhanced features. |
 | **M8 – Automated Testing** | C++ generator integrated; end-to-end testing of all ELF features automated via generated binaries. |
-| **M9 – Interactive TUI** | Reactive terminal interface fully functional with keyboard navigation, search/filtering, and lazy-loading enhanced metadata. Code coverage ">= 80%" maintained across the new module. |
+| **M9 – Interactive TUI** | Reactive terminal interface fully functional with keyboard navigation and lazy-loading enhanced metadata. Code coverage ">= 80%" maintained across the new module. |
 
 ### Future Considerations
 
