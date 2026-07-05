@@ -67,7 +67,8 @@ def main() -> None:
             # Re-open the file to parse enhanced metadata
             with open(args.path, 'rb') as f:
                 elf = ELFFile(f)
-                
+
+                symbols: list | None = None
                 if args.symbols:
                     symbols = _parse_symbol_table(elf)
                     render_symbol_table(symbols, console)
@@ -76,9 +77,13 @@ def main() -> None:
                     relocations = []
                     for section in elf.iter_sections():
                         relocations.extend(_parse_relocation_section(section))
-                    # Parse symbols for reference resolution
-                    symbols = _parse_symbol_table(elf) if not args.symbols else None
-                    render_relocation_entries(relocations, console, symbols)
+                    # Share symbols for reference resolution when already parsed,
+                    # otherwise parse them just for this purpose
+                    render_relocation_entries(
+                        relocations,
+                        console,
+                        symbols if symbols is not None else _parse_symbol_table(elf),
+                    )
 
                 if args.dynamic:
                     dynamic_data = _parse_dynamic_section(elf)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from typing import Any, Optional
 from elftools.elf.elffile import ELFFile
 from .models import SectionInfo, InputFile, SymbolInfo, RelocationEntry, VersionDefinition
 from .exceptions import ELFParseError
@@ -72,84 +73,93 @@ def _parse_symbol_table(elf_file) -> list[SymbolInfo]:
     for section in elf_file.iter_sections():
         if section['sh_type'] == 'SHT_SYMTAB' or section['sh_type'] == 'SHT_DYNSYM':
             try:
-                symtab_section = section
-                strtab_section = None
-                
-                # Find string table section (usually .strtab or .dynsym)
-                for s in elf_file.iter_sections():
-                    if s['sh_type'] == 'SHT_STRTAB' and (
-                        '.strtab' in s.name.lower() or '.dynstr' in s.name.lower()
-                    ):
-                        strtab_section = s
-                        break
-                
                 # Parse symbols from symbol table section
-                for symbol in symtab_section.iter_symbols():
-                    name = symbol.name if hasattr(symbol, 'name') else "<unnamed>"
-                    value = symbol['st_value']
-                    size = symbol['st_size']
-                    binding = _get_symbol_binding_name(symbol.get('st_info', 0))
-                    visibility = _get_symbol_visibility_name(symbol.get('st_other', 0))
-                    section_index = symbol['st_shndx']
-                    is_local = (symbol.get('st_info', 0) & 0xF) == 0  # STB_LOCAL
-                    
+                for symbol_obj in section.iter_symbols():
+                    entry = symbol_obj.entry
+                    name = symbol_obj.name or ''
+                    value = entry.get('st_value', 0)
+                    size = entry.get('st_size', 0)
+
+                    # pyelftools wraps st_info/st_other as container dicts
+                    st_info = entry['st_info']
+                    st_other = entry.get('st_other', {})
+
+                    if hasattr(st_info, 'get') and callable(getattr(st_info, 'get')):
+                        binding = st_info.get('bind', 'unknown')
+                    else:
+                        binding = _get_symbol_binding_name_from_raw(int(st_info))
+
+                    if hasattr(st_other, 'get') and callable(getattr(st_other, 'get')):
+                        visibility = st_other.get('visibility', 'unknown')
+                    else:
+                        visibility = _get_symbol_visibility_name_from_raw(
+                            int(st_other) if st_other else 0,
+                        )
+
+                    # Resolve section index (may be string like SHN_UNDEF)
+                    sec_idx = entry.get('st_shndx', 0)
+                    if isinstance(sec_idx, str):
+                        sec_idx = 0
+
+                    is_local = binding == 'STB_LOCAL'
+
                     symbols.append(SymbolInfo(
                         name=name,
                         value=value,
                         size=size,
                         binding=binding,
                         visibility=visibility,
-                        section_index=section_index,
+                        section_index=sec_idx,
                         is_local=is_local
                     ))
-            except Exception as e:
+            except Exception:
                 # Skip problematic symbol tables but continue parsing
                 continue
     
     return symbols
 
-def _get_symbol_binding_name(st_info: int) -> str:
+def _get_symbol_binding_name_from_raw(st_info: int) -> str:
     """
-    Convert ELF symbol binding info to human-readable name.
-    
+    Convert raw ELF symbol st_info byte to binding name (fallback path).
+
     Args:
-        st_info: Symbol information byte from ELF header
-        
+        st_info: Raw st_info integer from section header.
+
     Returns:
-        Human-readable binding name
+        Human-readable binding name string.
     """
     if not isinstance(st_info, int):
         return "<unknown>"
-    
+
     binding = (st_info >> 4) & 0xF
     bindings = {
         0: "STB_LOCAL",
-        1: "STB_GLOBAL", 
+        1: "STB_GLOBAL",
         2: "STB_WEAK",
-        10: "STB_GNU_UNIQUE"
+        10: "STB_GNU_UNIQUE",
     }
     return bindings.get(binding, f"<unknown:{binding}>")
 
 
-def _get_symbol_visibility_name(st_other: int) -> str:
+def _get_symbol_visibility_name_from_raw(st_other: int) -> str:
     """
-    Convert ELF symbol visibility info to human-readable name.
-    
+    Convert raw ELF symbol st_other byte to visibility name (fallback path).
+
     Args:
-        st_other: Symbol other byte from ELF header
-        
+        st_other: Raw st_other integer from section header.
+
     Returns:
-        Human-readable visibility name
+        Human-readable visibility name string.
     """
     if not isinstance(st_other, int):
         return "<unknown>"
-    
+
     visibility = (st_other >> 5) & 0x3
     visibilities = {
         0: "STV_DEFAULT",
         1: "STV_INTERNAL",
-        2: "STV_HIDDEN", 
-        3: "STV_PROTECTED"
+        2: "STV_HIDDEN",
+        3: "STV_PROTECTED",
     }
     return visibilities.get(visibility, f"<unknown:{visibility}>")
 
@@ -157,39 +167,32 @@ def _get_symbol_visibility_name(st_other: int) -> str:
 def _parse_relocation_section(section) -> list[RelocationEntry]:
     """
     Parse relocation entries from a section.
-    
+
     Args:
-        section: ELF section containing relocations
-        
+        section: ELF section containing relocations (SHT_REL or SHT_RELA)
+
     Returns:
         List of RelocationEntry objects
     """
     relocations = []
     try:
-        if section['sh_type'] == 'SHT_RELA':
-            # RELA format: offset, info, addend
-            for rel in section.iter_relas():
-                relocations.append(RelocationEntry(
-                    offset=rel['r_offset'],
-                    info=rel['r_info'],
-                    addend=rel.get('r_addend'),
-                    symbol_index=_get_symbol_index_from_r_info(rel['r_info']),
-                    section_type="rela"
-                ))
-        elif section['sh_type'] == 'SHT_REL':
-            # REL format: offset, info (no addend)
-            for rel in section.iter_relocs():
-                relocations.append(RelocationEntry(
-                    offset=rel['r_offset'],
-                    info=rel['r_info'],
-                    addend=None,
-                    symbol_index=_get_symbol_index_from_r_info(rel['r_info']),
-                    section_type="rel"
-                ))
-    except Exception as e:
+        is_rela = section['sh_type'] == 'SHT_RELA'
+        # pyelftools uses a unified iter_relocations() for REL and RELA
+        for rel_entry in section.iter_relocations():
+            entry = rel_entry.entry
+            relocations.append(RelocationEntry(
+                offset=entry.get('r_offset', 0),
+                info=entry.get('r_info', 0),
+                addend=entry.get('r_addend') if is_rela else None,
+                symbol_index=_get_symbol_index_from_r_info(
+                    entry.get('r_info', 0)
+                ),
+                section_type="rela" if is_rela else "rel",
+            ))
+    except Exception:
         # Skip problematic relocation sections
         pass
-    
+
     return relocations
 
 def _get_symbol_index_from_r_info(r_info: int) -> Optional[int]:
@@ -212,56 +215,71 @@ def _get_symbol_index_from_r_info(r_info: int) -> Optional[int]:
 def _parse_dynamic_section(elf_file) -> dict[str, Any]:
     """
     Parse dynamic section entries from an ELF file.
-    
+
     Args:
         elf_file: ELFFile instance
-        
+
     Returns:
         Dictionary containing parsed dynamic section data
     """
-    dynamic_data = {}
+    dynamic_data: dict[str, list[dict[str, Any]]] = {}
     try:
         for section in elf_file.iter_sections():
             if section['sh_type'] == 'SHT_DYNAMIC':
-                entries = []
-                for dyn in section.iter_dicts():
+                entries: list[dict[str, Any]] = []
+                for tag in section.iter_tags():
+                    te = tag.entry
                     entries.append({
-                        'tag': dyn.d_tag,
-                        'value': dyn.d_val
+                        'tag': te.get('d_tag', 'unknown'),
+                        'value': te.get('d_val', 0),
                     })
                 dynamic_data[section.name] = entries
-    except Exception as e:
+    except Exception:
         # Skip problematic dynamic sections
         pass
-    
+
     return dynamic_data
 
 
 def _parse_version_definitions(elf_file) -> list[VersionDefinition]:
     """
     Parse version definitions from an ELF file.
-    
+
+    Reads SHT_GNU_verneed (.gnu.version_r) sections which contain
+    (Version_object, aux_generator) tuples returned by iter_versions().
+
     Args:
         elf_file: ELFFile instance
-        
+
     Returns:
         List of VersionDefinition objects
     """
     versions = []
     try:
         for section in elf_file.iter_sections():
-            if section['sh_type'] == 'SHT_GNU_VERSION':
-                # Parse version definitions from .gnu_version or .gnu_version_r
-                for ver in section.iter_versions():
+            if section['sh_type'] == 'SHT_GNU_verneed':
+                # iter_versions() yields (Version, aux_generator) tuples
+                for version_tuple in section.iter_versions():
+                    ver_obj = version_tuple[0]
+                    aux_gen = version_tuple[1]
+                    ve = ver_obj.entry
+                    # Extract hash values from auxiliary entries (Container dicts)
+                    aux_values: list[int] = []
+                    for aux_entry in aux_gen:
+                        if hasattr(aux_entry, 'entry'):
+                            val = aux_entry.entry.get('vna_hash', 0)
+                        else:
+                            val = int(aux_entry) if aux_entry else 0
+                        aux_values.append(val)
                     versions.append(VersionDefinition(
-                        version_name=f"v{ver.vda_minor}",
-                        hash_value=ver.vda_hash,
-                        auxiliary_vector=list(ver.vda_aux),
-                        timestamp=ver.vda_timestamp
+                        version_name=str(ve.get('vn_version', 0)),
+                        hash_value=ve.get('vn_cnt', 0),
+                        auxiliary_vector=aux_values,
+                        timestamp=0,  # not natively exposed by pyelftools
                     ))
-    except Exception as e:
+    except Exception:
         # Skip problematic version sections
         pass
-    
+
     return versions
 
