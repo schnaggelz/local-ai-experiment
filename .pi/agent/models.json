@@ -50,6 +50,7 @@
             "text"
           ],
           "contextWindow": 262144,
+          "maxTokens": 4096,
           "reasoning": true
         },
         {
@@ -58,6 +59,7 @@
             "text"
           ],
           "contextWindow": 131072,
+          "maxTokens": 4096,
           "reasoning": true
         }
       ]
