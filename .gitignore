@@ -4,6 +4,9 @@
 **/*.log
 **/*.wav
 **/*.hef
+**/*.so
+**/*.bin
+**/*_bin
 .pytest*
 **/build
 **/*.egg-info
