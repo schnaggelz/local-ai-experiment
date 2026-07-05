@@ -33,10 +33,10 @@ class MainScreen(Screen[InputFile]):
             yield IconSidebar(
                 id="sidebar",
                 items=(
-                    ("📑 Sections", "sections"),
-                    ("🗃️ Symbols", "symbols"),
-                    ("🔗 Relocations", "relocs"),
-                    ("⚙️ Dynamic Info", "dynamic"),
+                    ("Sections", "sections"),
+                    ("Symbols", "symbols"),
+                    ("Relocations", "relocs"),
+                    ("Dynamic Info", "dynamic"),
                 ),
             )
             with Vertical(id="content-area"):
