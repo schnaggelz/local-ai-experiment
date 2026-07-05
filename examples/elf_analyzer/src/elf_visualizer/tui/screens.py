@@ -6,7 +6,7 @@ from textual.screen import Screen
 from textual.widgets import Footer, Header, Label, Select, Static
 
 from elf_visualizer.models import InputFile
-from elf_visualizer.tui.widgets import HexViewerWidget, IconSidebar, MetadataPanel, SectionTable, SymbolTable
+from elf_visualizer.tui.widgets import RelocationTable, HexViewerWidget, IconSidebar, MetadataPanel, SectionTable, SymbolTable
 
 
 class MainScreen(Screen[InputFile]):
@@ -65,10 +65,7 @@ class MainScreen(Screen[InputFile]):
         elif self.current_view == "symbols":
             container.mount(SymbolTable(self.elf_data.symbols or []))
         elif self.current_view == "relocs":
-            from elf_visualizer.visualizer import render_relocation_entries
-            # We use a simple Static representation if no reloc widget exists yet, 
-            # but let's mount HexViewer as placeholder for detailed single-entry inspection.
-            container.mount(Static("Relocation Table (under construction)", id="placeholder"))
+            container.mount(RelocationTable(self.elf_data.relocations or []))
         elif self.current_view == "dynamic":
             container.mount(MetadataPanel(self.elf_data.dynamic_entries or {}))
 

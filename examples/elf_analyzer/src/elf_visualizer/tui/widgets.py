@@ -142,6 +142,38 @@ class SymbolTable(DataTable[str]):
             )
 
 
+# -- Relocation Table Widget ---------------------------------------------------
+
+class RelocationTable(DataTable[str]):
+    """Displays parsed ELF relocation entries in an interactive table."""
+
+    CSS = """
+    DataTable {
+        width: 100%;
+        height: 1fr;
+    }
+    """
+
+    def __init__(self, relocs: list[Any]) -> None:
+        super().__init__()
+        self.relocs = relocs
+
+    def on_mount(self) -> None:
+        if not self.relocs:
+            return
+        self.add_columns("Idx", "Offset", "Info", "Addend", "Sym Idx", "Type")
+        for idx, rel in enumerate(self.relocs):
+            self.add_row(
+                str(idx),
+                f"0x{rel.offset:x}",
+                str(rel.info),
+                str(rel.addend) if rel.addend is not None else "N/A",
+                str(rel.symbol_index) if rel.symbol_index is not None else "N/A",
+                rel.section_type,
+                key=f"rel-{idx}",
+            )
+
+
 # -- Metadata Panel Widget -----------------------------------------------------
 
 class MetadataPanel(Static):
