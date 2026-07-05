@@ -20,8 +20,8 @@ class SidebarItem:
 class IconSidebar(Static):
     """A sidebar widget for switching TUI views."""
 
-    def __init__(self, items: tuple[tuple[str, str], ...]) -> None:
-        super().__init__()
+    def __init__(self, items: tuple[tuple[str, str], ...], **kwargs) -> None:
+        super().__init__(**kwargs)
         self.items = dict(items)
         self.selected_key = "sections"
 

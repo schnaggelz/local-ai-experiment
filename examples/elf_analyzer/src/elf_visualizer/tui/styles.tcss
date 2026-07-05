@@ -36,7 +36,6 @@
     color: $primary-lighten-2;
     text-align: center;
     margin-bottom: 1;
-    style: bold italic;
 }
 
 /* Panels */
@@ -46,10 +45,6 @@
 }
 
 /* DataTable Customization */
-DataTable {
-    highlight-match: true;
-}
-
 DataTable .cursor-cell {
     background: $accent;
     color: $text;
