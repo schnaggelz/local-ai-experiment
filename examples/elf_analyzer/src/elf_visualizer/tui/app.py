@@ -17,10 +17,6 @@ class ElfTuiApp(App):
     BINDINGS = [
         Binding("q", "quit", "Quit", priority=True),
         Binding("d", "toggle_dark", "Toggle Dark Mode"),
-        Binding("s", "screen_sections", "Sections"),
-        Binding("y", "screen_symbols", "Symbols"),
-        Binding("r", "screen_relocations", "Relocations"),
-        Binding("/", "focus_search", "Search"),
     ]
 
     def __init__(self, elf_path: str) -> None:
@@ -49,7 +45,7 @@ class ElfTuiApp(App):
 
             with open(self.elf_path, "rb") as f:
                 elf = ELFFile(f)
-                symbols = _parse_symbol_table(elf) or symbol
+                symbols = _parse_symbol_table(elf) or []
 
                 relocs = []
                 for sec in elf.iter_sections():
@@ -83,29 +79,12 @@ class ElfTuiApp(App):
 
     # -- Screen Navigation Actions -------------------------------------------
 
-    def action_toggle_dark(self) -> None:
-        self.dark = not self.dark
-
-    def action_focus_search(self) -> None:
-        if self.main_screen:
-            self.main_screen.action_switch("/", **{}) # Fallback for custom search bar in future
-
     def _switch_view(self, view_id: str) -> None:
         """Helper to update the currently mounted screen's view state directly."""
         if self.main_screen:
-            # If it's a URL-style param for other screens, we just parse the key out.
             clean_key = view_id.split("?")[0]
             self.notify(f"Switched to {clean_key.replace('_', ' ').title()} View")
             self.main_screen.action_switch(clean_key)
-
-    def action_screen_sections(self) -> None:
-        self._switch_view("sections")
-
-    def action_screen_symbols(self) -> None:
-        self._switch_view("symbols")
-
-    def action_screen_relocations(self) -> None:
-        self._switch_view("relocs")
 
 
 def run_tui(elf_path: str) -> None:
