@@ -16,12 +16,12 @@ deb [arch=amd64 signed-by=/etc/apt/keyrings/amdrocm.gpg] https://repo.amd.com/ro
 EOF
 
 RUN apt update && apt install -y --no-install-recommends \
-     rocminfo amdrocm-core7.13-gfx1100 amdrocm-blas7.13-gfx1100 amdrocm-runtime7.13
-#     rocminfo amdrocm-core7.13-gfx1201 amdrocm-blas7.13-gfx1201 amdrocm-runtime7.13
+     rocminfo amdrocm-core7.14-gfx1100 amdrocm-blas7.14-gfx1100 amdrocm-runtime7.14
 
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
 RUN rm -rf /var/cache/apt/* && apt clean all
+
 
 # Set the default shell to loop/wait or drop into zsh
 CMD ["/bin/zsh"]

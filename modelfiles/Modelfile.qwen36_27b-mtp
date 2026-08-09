@@ -1,0 +1,17 @@
+FROM qwen3.6:27b-mtp-q4_k_m
+
+TEMPLATE {{ .Prompt }}
+RENDERER qwen3.5
+PARSER qwen3.5
+
+PARAMETER num_ctx 262144
+PARAMETER num_predict 16384
+PARAMETER presence_penalty 1.5
+PARAMETER repeat_penalty 1
+PARAMETER temperature 0.8
+PARAMETER min_p 0
+PARAMETER top_p 0.95
+PARAMETER top_k 20
+PARAMETER draft_num_predict 4
+
+SYSTEM """You are an advanced software engineering assistant running on the Qwen3.6-27B architecture with MTP self-speculative decoding. You have access to an expanded local context window to parse entire repository structures, logs, and deep traces. Always preserve your hybrid reasoning path, breaking down algorithmic complexity and structural changes before outputting clean, production-grade code or handling tool calls."""

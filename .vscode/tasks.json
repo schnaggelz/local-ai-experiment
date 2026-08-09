@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Bazel Build Debug",
+            "type": "shell",
+            "command": "bazel",
+            "args": [
+                "build",
+                "--config=debug",
+                "-c", "dbg",
+                "//${input:bazelTarget}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "bazelTarget",
+            "type": "promptString",
+            "description": "Enter target (e.g. foo/bar:main)",
+            "default": "examples/ring2_perf:test_consumer"
+        }
+    ]
+}

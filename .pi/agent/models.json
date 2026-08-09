@@ -22,11 +22,12 @@
           "reasoning": true
         },
         {
-          "id": "qwen3-coder:30b",
+          "id": "qwen3.6-longctx:35b",
           "input": [
             "text"
           ],
-          "contextWindow": 32768,
+          "contextWindow": 262144,
+          "maxTokens": 16384,
           "reasoning": true
         }
       ]
@@ -36,30 +37,22 @@
       "api": "openai-completions",
       "apiKey": "ollama",
       "models": [
-        {
-          "id": "gemma4-26b-longctx:latest",
-          "input": [
-            "text"
-          ],
-          "contextWindow": 262144,
-          "reasoning": true
-        },
-        {
-          "id": "north-mini-code-1.0-longctx:latest",
-          "input": [
-            "text"
-          ],
-          "contextWindow": 262144,
-          "maxTokens": 4096,
-          "reasoning": true
-        },
-        {
-          "id": "qwen3.6-27b-longctx:latest",
+        { 
+          "id": "qwen3.6-longctx:27b-mtp",
           "input": [
             "text"
           ],
           "contextWindow": 131072,
-          "maxTokens": 4096,
+          "maxTokens": 16384,
+          "reasoning": true
+        },
+        {
+          "id": "qwen3.6-longctx:35b",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 131072,
+          "maxTokens": 8192,
           "reasoning": true
         }
       ]
@@ -75,6 +68,14 @@
             "text"
           ],
           "contextWindow": 32768,
+          "reasoning": true
+        },
+        {
+          "id": "deepseek-r1:14b",
+          "input": [
+            "text"
+          ],
+          "contextWindow": 65536,
           "reasoning": true
         }
       ]
