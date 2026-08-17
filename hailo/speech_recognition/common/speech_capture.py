@@ -6,7 +6,7 @@ import pyaudio
 import webrtcvad
 
 FORMAT = pyaudio.paInt16
-SAMPLE_RATE = 16000       # Hz — required by webrtcvad and Whisper
+SAMPLE_RATE = 16000       # Hz  required by webrtcvad and Whisper
 CHANNELS = 1
 FRAME_DURATION_MS = 30    # ms per VAD frame (10, 20, or 30)
 FRAME_SIZE = int(SAMPLE_RATE * FRAME_DURATION_MS / 1000)
@@ -74,7 +74,7 @@ class SpeechCapture:
                         onset_count += 1
                         onset_buffer.append(frame)
                         if onset_count >= ONSET_FRAMES:
-                            log.info("Speech detected — recording")
+                            log.info("Speech detected  recording")
                             triggered = True
                             speech_frames.extend(pre_roll)
                             speech_frames.extend(onset_buffer)
@@ -90,7 +90,7 @@ class SpeechCapture:
                         silence_count += 1
                         speech_frames.append(frame)
                         if silence_count >= SILENCE_TIMEOUT_FRAMES:
-                            log.info("Silence detected — end of utterance")
+                            log.info("Silence detected  end of utterance")
                             break
                     else:
                         pre_roll.append(frame)  # deque auto-evicts oldest when full
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-    DEVICE_INDEX = 0  # USB Microphone — captured directly at 16000 Hz
+    DEVICE_INDEX = 0  # USB Microphone  captured directly at 16000 Hz
 
     pa = pyaudio.PyAudio()
     try:

@@ -39,8 +39,8 @@ hailo/speech_recognition/
     hailo_decoder.py           Whisper inference via HailoRT
     device_discovery.py        PyAudio device enumeration
   config/                      shared YAML configuration
-    command_patterns.yaml      spoken phrases  →  turn_on / turn_off / toggle
-    entity_patterns.yaml       spoken room names  →  HA entity IDs
+    command_patterns.yaml      spoken phrases    turn_on / turn_off / toggle
+    entity_patterns.yaml       spoken room names    HA entity IDs
   listen_transcribe/           app: transcribe and print to stdout
     listen_transcribe.py
   voice_control/               app: transcribe and dispatch HA commands
@@ -61,26 +61,26 @@ python3 -m listen_transcribe.listen_transcribe \
     --input-device 1 \
     --language de
 
-# Voice → Home Assistant
+# Voice  Home Assistant
 python3 -m voice_control.voice_control \
     --hef ../../models/whisper_base.hef \
     --input-device 1 \
     --language de
 ```
 
-Say the wake word (*maus* by default) followed by a room name and command, e.g. *„Maus, Wohnzimmer an"*. Use `--no-wake-word` to process every utterance directly.
+Say the wake word (*maus* by default) followed by a room name and command, e.g. *Maus, Wohnzimmer an"*. Use `--no-wake-word` to process every utterance directly.
 
 ### Configuration
 
-Edit the YAML files in `config/` — no code changes needed:
+Edit the YAML files in `config/`  no code changes needed:
 
-**`config/entity_patterns.yaml`** — map spoken names to HA entity IDs:
+**`config/entity_patterns.yaml`**  map spoken names to HA entity IDs:
 ```yaml
 - pattern: '\b(wohnzimmer|wohn|living room)\b'
   entity_id: light.living_room
 ```
 
-**`config/command_patterns.yaml`** — map spoken phrases to actions:
+**`config/command_patterns.yaml`**  map spoken phrases to actions:
 ```yaml
 - pattern: '\b(an|ein|einschalten|turn on)\b'
   action: turn_on
@@ -96,7 +96,7 @@ Edit the YAML files in `config/` — no code changes needed:
 | `--wake-word` | `maus` | Keyword to activate command mode |
 | `--no-wake-word` | off | Process every utterance without a wake word |
 | `--active-time-window` | `10` | Seconds to stay active after the wake word |
-| `--vad-mode` | `2` | WebRTC VAD aggressiveness 0–3 |
+| `--vad-mode` | `2` | WebRTC VAD aggressiveness 03 |
 | `--timeout` | `5.0` | Max capture length per utterance (seconds) |
 | `--ha-url` | `http://192.168.242.21:8123` | Home Assistant base URL (`voice_control` only) |
 | `--ha-token` | `$HA_TOKEN` | Long-lived access token (`voice_control` only) |

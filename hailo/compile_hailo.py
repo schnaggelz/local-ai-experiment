@@ -10,7 +10,7 @@ DEFAULT_ONNX = "outputs/model.onnx"
 DEFAULT_DATA_DIR = "data/tracks"
 DEFAULT_OUT_DIR = "outputs"
 
-# Hailo Dataflow Compiler — parse + optimize + quantize + compile
+# Hailo Dataflow Compiler  parse + optimize + quantize + compile
 
 def compile_hailo(
     onnx_path: Path,

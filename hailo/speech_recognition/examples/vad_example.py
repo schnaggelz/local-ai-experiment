@@ -6,7 +6,7 @@ import sys
 import pyaudio
 import webrtcvad
 
-SAMPLE_RATE = 16000           # Hz — required by webrtcvad
+SAMPLE_RATE = 16000           # Hz  required by webrtcvad
 FRAME_MS = 30                 # frame length: 10, 20, or 30 ms
 FRAME_SAMPLES = int(SAMPLE_RATE * FRAME_MS / 1000)
 
@@ -24,7 +24,7 @@ def main(device_index: int | None = None, vad_mode: int = 3) -> None:
         frames_per_buffer=FRAME_SAMPLES,
     )
 
-    print(f"VAD mode {vad_mode} — press Ctrl+C to stop\n")
+    print(f"VAD mode {vad_mode}  press Ctrl+C to stop\n")
     try:
         while True:
             raw = stream.read(FRAME_SAMPLES, exception_on_overflow=False)

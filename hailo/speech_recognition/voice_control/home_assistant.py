@@ -33,7 +33,7 @@ class HomeAssistant:
                 "Content-Type": "application/json",
             }
         )
-        log.debug("HARemote ready — %s", self._base_url)
+        log.debug("HARemote ready  %s", self._base_url)
 
     def turn_on(self, entity_id: str, *, transition: Optional[float] = None) -> dict:
         payload: dict = {"entity_id": entity_id}

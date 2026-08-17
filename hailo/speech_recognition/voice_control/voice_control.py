@@ -48,9 +48,9 @@ def run(
         )
 
         if wake_word is None:
-            print("Listening — press Ctrl+C to stop.\n")
+            print("Listening  press Ctrl+C to stop.\n")
         else:
-            print(f"Sleeping — say '{wake_word}' to activate. Press Ctrl+C to stop.\n")
+            print(f"Sleeping  say '{wake_word}' to activate. Press Ctrl+C to stop.\n")
 
         try:
             while True:
@@ -93,7 +93,7 @@ if __name__ == "__main__":
         datefmt="%H:%M:%S",
     )
 
-    parser = argparse.ArgumentParser(description="Voice → Home Assistant light control via Hailo Whisper")
+    parser = argparse.ArgumentParser(description="Voice  Home Assistant light control via Hailo Whisper")
     parser.add_argument("--hef", required=True, help="Path to Whisper HEF file for Hailo")
     parser.add_argument("--input-device", type=int, default=None, help="Audio input device index")
     parser.add_argument("--list-devices", action="store_true", help="List audio devices and exit")

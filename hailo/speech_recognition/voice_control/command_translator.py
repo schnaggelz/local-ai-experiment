@@ -37,7 +37,7 @@ class CommandTranslator:
             log.debug("No recognised action found in: %r", text)
             return False
 
-        log.info("Command: %s → %s", entity_id, action)
+        log.info("Command: %s  %s", entity_id, action)
 
         try:
             if action == "turn_on":
@@ -46,7 +46,7 @@ class CommandTranslator:
                 self._ha.turn_off(entity_id)
             elif action == "toggle":
                 self._ha.toggle(entity_id)
-            print(f"  ✓ {action} → {entity_id}")
+            print(f"   {action}  {entity_id}")
             return True
         except Exception as exc:  # noqa: BLE001
             log.warning("HA command failed: %s", exc)

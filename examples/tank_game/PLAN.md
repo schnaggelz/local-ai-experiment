@@ -2,17 +2,17 @@
 
 A physics-based 2D artillery game built with `pygame`. Two players control tanks on opposite sides of the screen, adjusting cannon angles and power to hit each other while accounting for gravity.
 
-## 🎯 Core Gameplay Mechanics
+##  Core Gameplay Mechanics
 - **Turn-Based Combat**: Players take turns aiming and firing.
 - **Physics Engine**: Projectiles follow a parabolic trajectory influenced by gravity.
 - **Aiming System**: Adjustable cannon angle (pipe) and variable shot power.
 - **Win Condition**: Reduce the opponent's health to zero or land a direct hit that destroys their tank.
 
-## 🛠 Technical Stack
+##  Technical Stack
 - **Language**: Python 3.x
 - **Library**: `pygame` (for rendering, input handling, and physics loops)
 
-## 📋 Development Roadmap
+##  Development Roadmap
 
 ### Phase 1: Engine Foundation & Basic Physics
 - [ ] Initialize Pygame window and game loop.
@@ -36,7 +36,7 @@ A physics-based 2D artillery game built with `pygame`. Two players control tanks
 - [ ] Enhance graphics (tank sprites, better ground textures).
 - [ ] Implement a Win/Loss screen and Reset functionality.
 
-## 🚀 Getting Started
+##  Getting Started
 1. Clone the repository.
 2. Install dependencies: `pip install pygame`.
 3. Run the game: `python examples/tank_game/main.py`.

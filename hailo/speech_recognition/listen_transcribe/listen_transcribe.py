@@ -72,9 +72,9 @@ if __name__ == "__main__":
         active_until = 0.0  # epoch time until which we stay in active mode
 
         if args.no_wake_word:
-            print("Listening — press Ctrl+C to stop.\n")
+            print("Listening  press Ctrl+C to stop.\n")
         else:
-            print(f"Sleeping — say '{wake_word}' to activate. Press Ctrl+C to stop.\n")
+            print(f"Sleeping  say '{wake_word}' to activate. Press Ctrl+C to stop.\n")
 
         try:
             while True:
