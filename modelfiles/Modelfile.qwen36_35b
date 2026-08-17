@@ -1,6 +1,12 @@
 FROM qwen3.6:35b
 
-TEMPLATE {{ .Prompt }}
+TEMPLATE """<|im_start|>system
+{{ .System }}<|im_end|>
+<|im_start|>user
+{{ .Prompt }}<|im_end|>
+<|im_start|>assistant
+"""/
+
 RENDERER qwen3.5
 PARSER qwen3.5
 

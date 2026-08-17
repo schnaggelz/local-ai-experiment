@@ -2,13 +2,13 @@ services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
-    environment:
       - OLLAMA_BASE_URL=http://192.168.242.55:11434
       - ENABLE_WEB_SEARCH=true
       - WEB_SEARCH_ENGINE=searxng
       - SEARXNG_QUERY_URL=http://searxng:8080/search
       - SEARXNG_LANGUAGE=all
       - USER_AGENT=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+      - BYPASS_MODEL_ACCESS_CONTROL=True
     ports:
       - "3000:8080"
     extra_hosts:
@@ -24,7 +24,7 @@ services:
       - "8081:8080"
     environment:
       - SEARXNG_BASE_URL=http://localhost:8081/
-      - SEARXNG_SECRET=${SEARXNG_SECRET:?set SEARXNG_SECRET in your environment}
+      - SEARXNG_SECRET=xxx
     volumes:
       - ./config/searxng:/etc/searxng
       - searxng_data:/var/cache/searxng

@@ -1,27 +1,17 @@
-FROM ubuntu:26.04
+FROM ubuntu:24.04
 
 # Prevent interactive prompts during apt installs
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install additional packages
-RUN apt update && apt install -y --no-install-recommends \
-    ca-certificates gnupg zsh zstd wget curl \
-    libatomic1 libquadmath0
+# Install minimal runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates zsh zstd wget curl procps pciutils \
+    && rm -rf /var/lib/apt/lists/*
 
-# Download and install GPG key
-RUN mkdir --parents --mode=0755 /etc/apt/keyrings
-RUN wget https://repo.amd.com/rocm/packages/gpg/rocm.gpg -O - | gpg --dearmor | tee /etc/apt/keyrings/amdrocm.gpg > /dev/null
-RUN tee /etc/apt/sources.list.d/rocm.list << EOF
-deb [arch=amd64 signed-by=/etc/apt/keyrings/amdrocm.gpg] https://repo.amd.com/rocm/packages-multi-arch/ubuntu2604 stable main
-EOF
+# Install Ollama via official installer (handles ROCm bundling automatically)
+RUN curl -fsSL https://ollama.com/install.sh | OLLAMA_SKIP_START=true sh
 
-RUN apt update && apt install -y --no-install-recommends \
-     rocminfo amdrocm-core7.14-gfx1100 amdrocm-blas7.14-gfx1100 amdrocm-runtime7.14
-
-RUN curl -fsSL https://ollama.com/install.sh | sh
-
-RUN rm -rf /var/cache/apt/* && apt clean all
-
+EXPOSE 11434
 
 # Set the default shell to loop/wait or drop into zsh
 CMD ["/bin/zsh"]

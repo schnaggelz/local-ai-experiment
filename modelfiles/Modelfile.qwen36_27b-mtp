@@ -1,10 +1,16 @@
 FROM qwen3.6:27b-mtp-q4_k_m
 
-TEMPLATE {{ .Prompt }}
-RENDERER qwen3.5
-PARSER qwen3.5
+TEMPLATE """<|im_start|>system
+{{ .System }}<|im_end|>
+<|im_start|>user
+{{ .Prompt }}<|im_end|>
+<|im_start|>assistant
+"""
 
-PARAMETER num_ctx 262144
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"
+
+PARAMETER num_ctx 131072
 PARAMETER num_predict 16384
 PARAMETER presence_penalty 1.5
 PARAMETER repeat_penalty 1

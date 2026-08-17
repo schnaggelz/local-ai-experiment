@@ -1,0 +1,44 @@
+general_settings:
+  disable_auth: true
+
+model_list:
+  - model_name: agx:qwen3.6-longctx:35b
+    litellm_params:
+      model: openai/qwen3.6-longctx:35b
+      api_base: "http://192.168.242.55:11434/v1"
+      api_key: "not-needed"
+    model_info:
+      max_input_tokens: 131072
+      max_output_tokens: 8192
+  - model_name: agx:gemma4:e4b
+    litellm_params:
+      model: openai/gemma4:e4b
+      api_base: "http://192.168.242.55:11434/v1"
+      api_key: "not-needed"
+    model_info:
+      max_input_tokens: 32768
+      max_output_tokens: 8192
+  - model_name: agx:gemma4:26b
+    litellm_params:
+      model: openai/gemma4:26b
+      api_base: "http://192.168.242.55:11434/v1"
+      api_key: "not-needed"
+    model_info:
+      max_input_tokens: 32768
+      max_output_tokens: 8192
+  - model_name: dt1:qwen3.6-longctx:27b
+    litellm_params:
+      model: openai/qwen3.6-longctx:27b
+      api_base: "http://192.168.242.90:11434/v1"
+      api_key: "not-needed"
+    model_info:
+      max_input_tokens: 262144
+      max_output_tokens: 16384
+  - model_name: dt1:qwen3.8-longctx:27b
+    litellm_params:
+      model: openai/qwen3.8-longctx:27b
+      api_base: "http://192.168.242.90:11434/v1"
+      api_key: "not-needed"
+    model_info:
+      max_input_tokens: 262144
+      max_output_tokens: 16384

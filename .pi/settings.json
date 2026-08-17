@@ -1,0 +1,16 @@
+{
+  "readTool": {
+    "maxLines": 10000,
+    "maxBytes": 153600
+  },
+  "writeTool": {
+    "maxLines": 10000,
+    "maxBytes": 153600
+  },
+  "ignorePatterns": [
+    "**/*.lock",
+    "**/*.pyc",
+    "bazel-*"
+  ],
+  "maxFileSizeKB": 500
+}

@@ -4,44 +4,28 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        LLAMA_CPP_REF: ${LLAMA_CPP_REF:-master}
-        ROCM_DOCKER_ARCH: ${ROCM_DOCKER_ARCH:-gfx1030;gfx1100;gfx1201}
+        LLAMA_CPP_REF: master
     image: llama-cpp-rocm:latest
     container_name: llama-cpp-rocm
     restart: unless-stopped
     ports:
-      - "${LLAMA_PORT:-8080}:${LLAMA_PORT:-8080}"
+      - "8080:8080"
     devices:
       - /dev/kfd:/dev/kfd
       - /dev/dri:/dev/dri
     security_opt:
       - seccomp=unconfined
     environment:
-      MODEL: ${MODEL:?Set MODEL to a model path inside /models, for example /models/model.gguf}
-      LLAMA_PORT: ${LLAMA_PORT:-8080}
-      LLAMA_CTX_SIZE: ${LLAMA_CTX_SIZE:-8192}
-      LLAMA_PREDICT: ${LLAMA_PREDICT:--1}
-      LLAMA_THREADS: ${LLAMA_THREADS:--1}
-      LLAMA_THREADS_BATCH: ${LLAMA_THREADS_BATCH:--1}
-      LLAMA_BATCH_SIZE: ${LLAMA_BATCH_SIZE:-2048}
-      LLAMA_UBATCH_SIZE: ${LLAMA_UBATCH_SIZE:-512}
-      LLAMA_PARALLEL: ${LLAMA_PARALLEL:-1}
-      LLAMA_TIMEOUT: ${LLAMA_TIMEOUT:-600}
-      LLAMA_THREADS_HTTP: ${LLAMA_THREADS_HTTP:--1}
-      LLAMA_GPU_LAYERS: ${LLAMA_GPU_LAYERS:-99}
-      LLAMA_CPU_MOE: ${LLAMA_CPU_MOE:-0}
-      LLAMA_N_CPU_MOE: ${LLAMA_N_CPU_MOE:-16}
-      LLAMA_API_KEY: ${LLAMA_API_KEY:-}
-      LLAMA_SYSTEM_PROMPT_FILE: ${LLAMA_SYSTEM_PROMPT_FILE:-}
-      LLAMA_FLASH_ATTN: ${LLAMA_FLASH_ATTN:-0}
-      LLAMA_METRICS: ${LLAMA_METRICS:-0}
-      LLAMA_MLOCK: ${LLAMA_MLOCK:-0}
-      LLAMA_NO_MMAP: ${LLAMA_NO_MMAP:-0}
-      LLAMA_VERBOSE: ${LLAMA_VERBOSE:-0}
-      LLAMA_EXTRA_ARGS: ${LLAMA_EXTRA_ARGS:-}
+      LLAMA_ARG_HOST: "0.0.0.0"
+      LLAMA_ARG_PORT: "8080"
+      LLAMA_ARG_MODEL: "/models/your-model.gguf"
+      LLAMA_ARG_CTX_SIZE: "8192"
+      LLAMA_ARG_N_GPU_LAYERS: "99"
+      LLAMA_ARG_BATCH: "2048"
+      LLAMA_ARG_UBATCH: "512"
+      LLAMA_ARG_N_PARALLEL: "1"
+      LLAMA_ARG_THREADS: "-1"
+      LLAMA_ARG_FLASH_ATTN: "auto"
     volumes:
-      - ${MODELS_DIR:-/srv/ollama/models}:/models
-      - ./run-llama-server.sh:/run-llama-server.sh:ro
-    entrypoint:
-      - /bin/sh
-      - /run-llama-server.sh
+      - /srv/ollama/models:/models
+    entrypoint: ["llama-server"]

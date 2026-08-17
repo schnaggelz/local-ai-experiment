@@ -1,6 +1,8 @@
 # Specify the base Cohere North model
 FROM north-mini-code-1.0
 
+TEMPLATE """{{ if .System }}<|START_OF_TURN_TOKEN|><|SYSTEM_TOKEN|>{{ .System }}<|END_OF_TURN_TOKEN|>{{ end }}<|START_OF_TURN_TOKEN|><|USER_TOKEN|>{{ .Prompt }}<|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|>"""
+
 # Pin the context size to 262,144 tokens 
 PARAMETER num_ctx 262144
 

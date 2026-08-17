@@ -1,0 +1,27 @@
+[Unit]
+Description=Ollama on Jetson AGX Xavier
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run --rm --runtime nvidia \
+        --memory="28g" \
+        --memory-swap="32g" \
+        --name ollama \
+        --network host \
+        -e JETSON_JETPACK=5 \
+        -e OLLAMA_MODELS=/models \
+        -e OLLAMA_CONTEXT_LENGTH=32768 \
+        -e OLLAMA_KV_CACHE_TYPE=q8_0 \
+        -e OLLAMA_MAX_LOADED_MODELS=1 \
+        -e OLLAMA_NUM_PARALLEL=1 \
+        -e OLLAMA_GPU_OVERHEAD=2147483648 \
+        -e OLLAMA_FLASH_ATTENTION=1 \
+        -v /mnt/ssd/ollama:/models \
+        ollama/ollama:latest
+ExecStop=/usr/bin/docker stop ollama
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,22 @@
+FROM qwen3.8-27b-ud-q4_k_xl.gguf
+
+TEMPLATE """<|im_start|>system
+{{ .System }}<|im_end|>
+<|im_start|>user
+{{ .Prompt }}<|im_end|>
+<|im_start|>assistant
+"""
+
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"
+
+PARAMETER num_ctx 131072
+PARAMETER num_predict 16384
+PARAMETER presence_penalty 1.5
+PARAMETER repetition_penalty 1
+PARAMETER temperature 1.0
+PARAMETER min_p 0
+PARAMETER top_p 0.95
+PARAMETER top_k 20
+
+SYSTEM """You are an advanced software engineering assistant running on the Qwen3.8-27B dense architecture. You have access to an expanded local context window to parse entire repository structures, logs, and deep traces. Always preserve your hybrid reasoning path, breaking down algorithmic complexity and structural changes before outputting clean, production-grade code or handling tool calls."""

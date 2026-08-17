@@ -1,6 +1,13 @@
 # Specify the base model
 FROM gemma4:26b
 
+TEMPLATE """<start_of_turn>user
+{{ if .System }}{{ .System }}
+
+{{ end }}{{ .Prompt }}<end_of_turn>
+<start_of_turn>model
+"""
+
 # Set the context size to 262,144 tokens
 PARAMETER num_ctx 262144
 

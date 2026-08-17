@@ -78,13 +78,13 @@ With the wrapper:
 
 ```sh
 cd /home/timon/Develop/local-ai-experiments
-./jetson-agx/sdkmanager-docker.sh
+./sdk/sdkmanager-docker.sh
 ```
 
 Direct Compose equivalent:
 
 ```sh
-cd /home/timon/Develop/local-ai-experiments/jetson-agx
+cd ./sdk
 docker compose run --rm sdkmanager
 ```
 
