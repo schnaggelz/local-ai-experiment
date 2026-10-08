@@ -1,0 +1,52 @@
+use_default_settings: true
+
+general:
+  debug: true
+  instance_name: "local searxng"
+
+
+search:
+  formats:
+    - html
+    - json
+
+outgoing:
+  request_timeout: 6.0
+  max_request_timeout: 10.0
+  pool_connections: 100
+  pool_maxsize: 20
+
+server:
+  base_url: http://localhost:8081/
+  port: 8080
+  bind_address: "0.0.0.0"
+  limiter: false
+
+engines:
+  # onion engines need a tor proxy; without one is_engine_active() fails and
+  # logs "can't register engine".  inactive: true skips loading entirely.
+  - name: ahmia
+    inactive: true
+  - name: torch
+    inactive: true
+  - name: duckduckgo
+    disabled: true
+  - name: brave
+    disabled: true
+  - name: google cse
+    disabled: true
+  - name: wikidata
+    disabled: true
+  - name: marginalia
+    inactive: true
+
+
+  # less-blocked engines, enable as replacement
+  - name: mojeek
+    disabled: false
+  - name: braveapi
+    engine: braveapi
+    api_key: ??????????????????????????????
+    results_per_page: 20
+    disabled: false
+    inactive: false

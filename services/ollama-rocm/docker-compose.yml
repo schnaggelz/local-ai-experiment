@@ -13,7 +13,7 @@ services:
       - "11434:11434"
     environment:
       - OLLAMA_HOST=0.0.0.0
-      - OLLAMA_KEEP_ALIVE=10m
+      - OLLAMA_KEEP_ALIVE=60m
       - OLLAMA_MAX_LOADED_MODELS=1
       - OLLAMA_MAX_QUEUE=16
       - OLLAMA_NUM_PARALLEL=1

@@ -57,6 +57,36 @@ Example:
 
 Forward-declare instead of `#include` when possible. Public headers self-contained only. No umbrella includes.
 
+## Documentation: Doxygen
+
+Headers are documented with **Doxygen** (`///` style). Public types, free functions and class members get a doc block; inline/implementation detail stays `//`.
+
+### Style
+```cpp
+/// @brief One-line summary.
+///
+/// Optional longer paragraph describing lifetime, ordering or cross-references.
+/// @param x What this parameter is / its contract.
+/// @return What the function yields / failure convention.
+/// @tparam T Constraint on the template parameter.
+class Foo
+{
+  public:
+    /// @brief Mutable counterpart; see @ref Foo::get.
+    [[nodiscard]] int get() const noexcept;
+};
+```
+
+### Rules
+- **`@file` + `@brief`** at the top of every header (blank line always used after  the file block; see defs.hpp / meta_data.hpp).
+- **`///` (triple-slash)** comment style; never `/** ... */` blocks.
+- Every public struct / class / method / free function gets a doc. **Private** members get a `///<` trailing comment only (no block).
+- Tag order: `@brief -> paragraph -> @tparam -> @param -> @return -> @note/@warning`.
+- Use `@param` for each parameter, `@return` for return values, `@warning` for UB / torn-write / lifetime traps, `@note` for rationale.
+- `@ref` for cross-references to other documented entities.
+- Doc verbosity is *dense*: `@brief` one line, optional short paragraph, no fluff.
+- Keep code bytes unchanged when adding docs (comments-only edits); then `clang-format`.
+
 ## Memory & RAII
 
 Resources wrapped in owners. No manual cleanup.
@@ -251,3 +281,4 @@ valgrind --leak-check=full bazel-bin/pkg/target    # requires debug profile (-O0
 - [ ] GTest + GMock patterns matched above.
 - [ ] `bazel build` passes clean. `bazel test` green.
 - [ ] clang-format applied. no format drift.
+- [ ] public headers carry `@file` + Doxygen doc on all public API (`@brief/@param/@return`).
