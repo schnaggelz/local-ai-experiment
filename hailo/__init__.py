@@ -1,0 +1,1 @@
+"""Package marker: makes ``hailo.speech`` importable from the repo root."""
